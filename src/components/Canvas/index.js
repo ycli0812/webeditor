@@ -10,7 +10,10 @@ import './Canvas.scss';
 import { Resistor } from '../Element';
 
 function Canvas(props) {
-    const {canvasWidth, canvasHeight} = props;
+    const {
+        canvasWidth,        // 画布宽度（像素）
+        canvasHeight        // 画布高度（像素）
+    } = props;
 
     const [elementSet, setElementSet] = useState({
         'R1': {x: 1, y: 1, type: 'resistor', selected: false, active: true},
@@ -174,13 +177,11 @@ function Canvas(props) {
             case 'resistor': {
                 elementList.push(
                     <Resistor
-                        x={x}
-                        y={y}
+                        gridPos={{x: x, y: y}}
                         id={id}
                         wireWidth={2}
                         zoom={zoom}
-                        gridX={gridX}
-                        gridY={gridY}
+                        gridCenter={{x: gridX, y: gridY}}
                         selected={selected}
                         active={active}
                         onMove={setCoordinate}
