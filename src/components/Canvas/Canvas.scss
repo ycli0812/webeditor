@@ -1,0 +1,22 @@
+#canvas {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+
+    #draw-area {
+        border: 1px solid #000000;
+    }
+
+    #real-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    #elements-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1024;
+    }
+}

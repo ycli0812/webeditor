@@ -1,0 +1,16 @@
+<svg width="150" height="150" xmlns="http://www.w3.org/2000/svg">
+    <g id="Layer_1">
+        <title>Layer 1</title>
+        <rect stroke-width="0" id="svg_1" height="150" width="90" y="0" x="30" stroke="#000" fill="#666666" />
+        <rect id="svg_2" height="4" width="30" y="28" x="0" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_3" height="4" width="30" y="58" x="0" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_4" height="4" width="30" y="88" x="0" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_5" height="4" width="30" y="118" x="0" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_6" height="4" width="30" y="28" x="120" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_7" height="4" width="30" y="58" x="120" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_8" height="4" width="30" y="88" x="120" stroke-width="0" stroke="#000" fill="#000000" />
+        <rect id="svg_9" height="4" width="30" y="118" x="120" stroke-width="0" stroke="#000" fill="#000000" />
+        <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_10"
+            y="84.41815" x="62.32742" stroke-width="0" stroke="#000" fill="#ffffff">IC</text>
+    </g>
+</svg>

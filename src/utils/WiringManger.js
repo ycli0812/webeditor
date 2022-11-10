@@ -1,0 +1,7 @@
+class Wire {
+
+}
+
+class WiringManager {
+
+}

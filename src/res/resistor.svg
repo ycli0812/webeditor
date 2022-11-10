@@ -1,0 +1,10 @@
+<svg width="300" height="90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 90">
+    <g id="svg_5">
+        <rect id="svg_1" height="90" width="240" y="-0.00001" x="29.93998" stroke-dasharray="5,2,2,2,2,2"
+            stroke-width="0" stroke="#000" fill="#5B9BA2" />
+        <rect id="svg_3" height="5" width="30" y="42.49999" x="269.8575" stroke-dasharray="5,2,2,2,2,2" stroke-width="0"
+            stroke="#000" fill="#000000" />
+        <rect id="svg_4" height="5" width="30" y="42.49999" x="0" stroke-dasharray="5,2,2,2,2,2" stroke-width="0"
+            stroke="#000" fill="#000000" />
+    </g>
+</svg>
