@@ -99,7 +99,7 @@ function Canvas(props) {
         let deltaY = ev.deltaY;
         let curZoom = zoom;
         if (deltaY < 0) {
-            curZoom = curZoom + 1 > 15 ? 15 : curZoom + 1;
+            curZoom = curZoom + 1 > 25 ? 25 : curZoom + 1;
         } else {
             curZoom = curZoom - 1 < 1 ? 1 : curZoom - 1;
         }

@@ -6,6 +6,19 @@ import './Element.scss';
 
 // Utils
 
+function Pin(props) {
+    const { 
+        zoom,           // 放大倍数，grid边长=zoom*5
+        wireWidth,      // 元件引脚处线宽
+        id,             // 元件id，也是g标签的id，所有id不会重复
+    } = props;
+    const gridSize = zoom * 5;
+
+    return (
+        <g></g>
+    );
+}
+
 function Resistor(props) {
     const { 
         gridPos,        // 元件左上角在grid坐标系的坐标（整数）
@@ -97,7 +110,7 @@ function Resistor(props) {
                 stroke='#000' fill='#000000' />
             <rect id='wire-left' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX} stroke-dasharray='5,2,2,2,2,2' stroke-width='0'
                 stroke='#000' fill='#000000' />
-            <text x={pixelX} y={pixelY}>{id}</text>
+            <text x={pixelX} y={pixelY} fontFamily='Times New Roman'>{id}</text>
         </g>
     );
 }
