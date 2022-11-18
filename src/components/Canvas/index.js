@@ -11,14 +11,14 @@ import { Resistor } from '../Element';
 
 function Canvas(props) {
     const {
-        canvasWidth,        // 画布宽度（像素）
-        canvasHeight        // 画布高度（像素）
+        canvasWidth,            // 画布宽度（像素）
+        canvasHeight,           // 画布高度（像素）
+        elementSet,             // 元件集合
+        pointerStatus,          // 光标状态，Canvas只需要判断是否正在进行Canvas之外的操作
+        onPointerStatusChange,  // 改变父组件中的光标状态
+        onUpdateElementSet      // 更新父组件元件集合
     } = props;
 
-    const [elementSet, setElementSet] = useState({
-        'R1': {x: 1, y: 1, type: 'resistor', selected: false, active: true},
-        'R2': {x: 1, y: 4, type: 'resistor', selected: false, active: true}
-    });
     const [zoom, setZoom] = useState(3);
     const [gridX, setGridX] = useState(250); // grid坐标系原点相对canvas的x像素偏移
     const [gridY, setGridY] = useState(250); // grid坐标系原点相对canvas的y像素偏移
@@ -123,21 +123,6 @@ function Canvas(props) {
     }
 
     /**
-     * 处理表单提交事件，添加元件
-     *
-     * @param {*} ev 事件实例
-     * @deprecated
-     */
-    function handleFormSubmit(ev) {
-        ev.preventDefault();
-        // const [{value:x}, {value:y}, {value:h}, {value:w}] = ev.target;
-        // let newElementList = [...elementSet];
-        // newElementList.push({ x: x, y: y, h: h, w: w });
-        // setElementList(newElementList);
-        console.log('This form has been deprecated.');
-    }
-
-    /**
      * 元件位置改变的回调
      *
      * @param {*} id 元件id
@@ -152,7 +137,7 @@ function Canvas(props) {
         let updatedElementSet = {...elementSet};
         updatedElementSet[id].x = x;
         updatedElementSet[id].y = y;
-        setElementSet(updatedElementSet);
+        onUpdateElementSet(updatedElementSet);
     }
 
     function handleElementSelect(id, state) {
@@ -166,7 +151,7 @@ function Canvas(props) {
         }
         updatedElementSet[id].selected = state;
         updatedElementSet[id].active = true;
-        setElementSet(updatedElementSet);
+        onUpdateElementSet(updatedElementSet);
     }
 
     // 渲染元件组件
@@ -214,17 +199,6 @@ function Canvas(props) {
                     width={canvasWidth}>
                 </canvas>    
             </div>
-            
-            <form id='add-form' onSubmit={handleFormSubmit}>
-                <input name='x' placeholder='x' type='number' />
-                <input name='y' placeholder='y' type='number' />
-                <br />
-                <input name='h' placeholder='h' type='number' />
-                <input name='w' placeholder='w' type='number' />
-                <br />
-                <input type='submit' value='添加' />
-                <span>(Deprecated! For test only.)</span>
-            </form>
         </div>
     );
 }
