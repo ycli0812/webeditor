@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Style
 import './Element.scss';
 
 // Utils
+
+// Context
+import { EditorContext } from '../../utils/EditorContext';
 
 function Pin(props) {
     const { 
@@ -21,26 +24,19 @@ function Pin(props) {
 
 function Resistor(props) {
     const { 
-        gridPos,        // 元件左上角在grid坐标系的坐标（整数）
+        pixelX,         // 元件相对canvas的像素坐标x
+        pixelY,         // 元件相对canvas的像素坐标y
         zoom,           // 放大倍数，grid边长=zoom*5
         wireWidth,      // 元件引脚处线宽
         id,             // 元件id，也是g标签的id，所有id不会重复
         gridCenter,     // grid坐标系原点在canvas中的像素坐标
         selected,       // 元件是否被选中
         active,         // 元件是否捕获鼠标事件，当有元件被选中时，其他元件将不接收鼠标事件
-        onMove,         // 改变元件grid坐标的回调，鼠标抬起时调用
-        onSelect        // 被选中时的回调，鼠标按下时调用
+        onMouseDown     // 按下时更新canvas中的初始偏移
     } = props;
     const gridSize = zoom * 5;
 
-    const [pixelX, setPixelX] = useState(gridPos.x * gridSize); // grid坐标系中的像素坐标
-    const [pixelY, setPixelY] = useState(gridPos.y * gridSize); // grid坐标系中的像素坐标
-    const [initOffset, setInitOffset] = useState({x: 0, y: 0}); // 鼠标按下时指针在元件内部的偏移
-    
-    useEffect(() => {
-        setPixelX(gridPos.x * gridSize);
-        setPixelY(gridPos.y * gridSize);
-    }, [zoom]);
+    const editor = useContext(EditorContext);
 
     /**
      * 用回调将元件状态设置为选中，记录按下时指针对元件左上角的像素偏移
@@ -49,59 +45,17 @@ function Resistor(props) {
      */
     function handleMouseDown(ev){
         ev.stopPropagation();
-        onSelect(id, true);
-        setInitOffset({x: ev.nativeEvent.offsetX - gridCenter.x - pixelX, y: ev.nativeEvent.offsetY - gridCenter.y - pixelY});
-    }
-
-    /**
-     * 根据元件当前的像素坐标计算grid坐标并调用onMove回调将更新的grid坐标传递给父组件
-     * 重新计算元件的像素坐标并更新
-     *
-     * @param {*} ev 事件实例
-     */
-    function handleMouseUp(ev) {
-        let gridX = Math.floor(pixelX / gridSize), gridY = Math.floor(pixelY / gridSize);
-        onMove(id, gridX, gridY);
-        setPixelX(gridX * gridSize);
-        setPixelY(gridY * gridSize);
-        onSelect(id, false);
-    }
-
-    /**
-     * 处理指针在元件内的移动事件，如果指针在元件选中时移动（拖动），更新像素位置
-     *
-     * @param {*} ev 事件实例
-     */
-    function handleMouseMove(ev) {
-        let movementX = ev.movementX, movementY = ev.movementY;
-        if(selected) {
-            setPixelX(pixelX + movementX);
-            setPixelY(pixelY + movementY);
-        }
-    }
-
-    /**
-     * 指针移出元件时触发，根据记录的初始指针偏移重新设置元件位置
-     * 删除这个事件响应不会使拖拽功能完全不能工作，但它可以使拖拽的体验更好
-     *
-     * @param {*} ev 事件实例
-     */
-    function handleMouseOut(ev) {
-        ev.preventDefault();
-        if(selected) {
-            let gridOffsetX = ev.nativeEvent.offsetX - gridCenter.x, gridOffsetY = ev.nativeEvent.offsetY - gridCenter.y; // 指针在grid坐标系中的像素坐标
-            setPixelX(gridOffsetX - initOffset.x);
-            setPixelY(gridOffsetY - initOffset.y);
-        }
+        editor.toggleStatus('draggingComponent', id);
+        onMouseDown(id, ev.nativeEvent.offsetX - gridCenter.x - pixelX, ev.nativeEvent.offsetY - gridCenter.y - pixelY);
     }
 
     return (
         <g
             id={id}
             onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            onMouseOut={handleMouseOut}
+            // onMouseUp={handleMouseUp}
+            // onMouseMove={handleMouseMove}
+            // onMouseOut={handleMouseOut}
             opacity={selected ? 0.5 : 1}
             style={{pointerEvents: active ? 'auto' : 'none'}}>
             <rect id='body' height={gridSize * 2} width={gridSize * 4} y={pixelY} x={pixelX + gridSize} stroke-dasharray='2'
