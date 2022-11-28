@@ -21,3 +21,14 @@ $ npm start
 ```
 
 Visit `localhost:3000` with browser to preview the project.
+
+## Arch
+
+This sector aims to introduce the components architecture of the project as well as the designing standard of new components.
+
+### Editor
+
+### Canvas
+
+### Elements
+

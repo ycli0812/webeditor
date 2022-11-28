@@ -1,7 +1,0 @@
-class Wire {
-
-}
-
-class WiringManager {
-
-}

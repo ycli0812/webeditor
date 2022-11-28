@@ -5,7 +5,8 @@ const validStatus = ['default', 'wiring', 'draggingComponent', 'deaggingCanvas',
 const EditorContext = createContext({
     status: validStatus[0],
     toggleStatus: () => {},
-    targetElementId: ''
+    targetElementId: '',
+    lastAnchorPoint: {x: 0, y: 0}
 });
 
 export { EditorContext };

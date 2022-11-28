@@ -14,17 +14,16 @@ import img_r from '../../res/resistor.svg';
 
 function ElementSample(props) {
     const {
-        name,
-        imgSrc,
-        onUpdateElementSet,
-        elementSet
+        name,                       // 名称
+        imgSrc,                     // 图片url
+        elementSet                  // 当前的元件集合
     } = props;
 
     const editor = useContext(EditorContext);
 
     function addComponent() {
         let newSet = {...elementSet};
-        let i=0
+        let i=0;
         for(; ('R'+String(i)) in newSet; i++);
         editor.toggleStatus('adding', 'R'+String(i));
     }
