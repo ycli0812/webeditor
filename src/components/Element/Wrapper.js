@@ -16,7 +16,6 @@ function WithMouseEvent(Wrapped, props) {
         id,             // 元件id，也是g标签的id，所有id不会重复
         gridCenter,     // grid坐标系原点在canvas中的像素坐标
         selected,       // 元件是否被选中
-        active,         // 元件是否捕获鼠标事件，当有元件被选中时，其他元件将不接收鼠标事件
         onMouseDown     // 按下时更新canvas中的初始偏移
     } = props;
 
@@ -34,8 +33,7 @@ function WithMouseEvent(Wrapped, props) {
         <g
         id={id}
         onMouseDown={handleMouseDown}
-        opacity={selected ? 0.5 : 1}
-        style={{pointerEvents: active ? 'auto' : 'none'}}>
+        opacity={selected ? 0.5 : 1}>
             <Wrapped {...props} />
         </g>
     );

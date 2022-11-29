@@ -10,6 +10,7 @@ import './Canvas.scss';
 // import { Resistor } from '../Element';
 import Resistor from '../Element/Resistor';
 import WithMouseEvent from '../Element/Wrapper';
+import BreadBoard from '../Element/BreadBoard';
 
 // Context
 import { EditorContext } from '../../utils/EditorContext';
@@ -22,10 +23,13 @@ function Canvas(props) {
         onUpdateElementSet      // 更新父组件元件集合
     } = props;
 
-    const [zoom, setZoom] = useState(3);
+    // 放大系数，最小4，最大20，grid = zoom * 5
+    const [zoom, setZoom] = useState(5);
     const gridSize = zoom * 5;
-    const [gridX, setGridX] = useState(250); // grid坐标系原点相对canvas的x像素偏移
-    const [gridY, setGridY] = useState(250); // grid坐标系原点相对canvas的y像素偏移
+    // grid坐标系原点相对Canvas的偏移
+    const [gridX, setGridX] = useState(250);
+    const [gridY, setGridY] = useState(250);
+    // 维护每个元件的像素位置（Editor全局的元件列表只存储grid坐标）供拖动时改变，拖动完成时才会更新grid坐标
     const p = {};
     for(let key in elementSet) {
         p[key] = {
@@ -83,6 +87,10 @@ function Canvas(props) {
                 context.fillRect(xi - 1, yi - 1, 2, 2);
             }
         }
+    }
+
+    function findNearestGridPoint(offsetX, offsetY) {
+        // TODO
     }
 
     function setElementInitOffset(id, x, y) {
@@ -150,29 +158,13 @@ function Canvas(props) {
                     initOffsetY: 0
                 };
                 onUpdateElementSet(newElementSet);
+                // editor.setElementPos(editor.targetElementId, );
                 setPixelPosList(newPixelSet);
                 break;
             }
             default: break;
         }
         editor.toggleStatus('default');
-    }
-
-    /**
-     * 鼠标滚轮滚动时触发，根据滚动方向更新缩放系数zoom
-     *
-     * @param {*} ev 事件实例
-     */
-    function handleMouseWheel(ev) {
-        let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        let deltaY = ev.deltaY;
-        let curZoom = zoom;
-        if (deltaY < 0) {
-            curZoom = curZoom + 1 > 25 ? 25 : curZoom + 1;
-        } else {
-            curZoom = curZoom - 1 < 1 ? 1 : curZoom - 1;
-        }
-        setZoom(curZoom);
     }
 
     /**
@@ -205,10 +197,28 @@ function Canvas(props) {
         }
     }
 
+    /**
+     * 鼠标滚轮滚动时触发，根据滚动方向更新缩放系数zoom
+     *
+     * @param {*} ev 事件实例
+     */
+    function handleMouseWheel(ev) {
+        let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
+        let deltaY = ev.deltaY;
+        let curZoom = zoom;
+        if (deltaY < 0) {
+            curZoom = curZoom + 1 > 20 ? 20 : curZoom + 1;
+        } else {
+            curZoom = curZoom - 1 < 4 ? 4 : curZoom - 1;
+        }
+        setZoom(curZoom);
+    }
+
     // 渲染元件组件
     let elementList = [];
+    let breadboard;
     for(let id in elementSet) {
-        const {x, y, type, selected, active} = elementSet[id];
+        const {x, y, type, selected, active, features} = elementSet[id];
         switch(type) {
             case 'resistor': {
                 elementList.push(
@@ -220,10 +230,24 @@ function Canvas(props) {
                         zoom: zoom,
                         gridCenter: {x: gridX, y: gridY},
                         selected: selected,
-                        active: active,
+                        features: features,
                         onMouseDown: setElementInitOffset
                     })
                 );
+                break;
+            }
+            case 'breadboard': {
+                breadboard = WithMouseEvent(BreadBoard, {
+                    pixelX: piexelPosList[id].x,
+                    pixelY: piexelPosList[id].y,
+                    id: id,
+                    wireWidth: 2,
+                    zoom: zoom,
+                    gridCenter: {x: gridX, y: gridY},
+                    selected: selected,
+                    features: features,
+                    onMouseDown: setElementInitOffset
+                });
                 break;
             }
             default: break;
@@ -242,6 +266,7 @@ function Canvas(props) {
                 onMouseUp={handleMouseUp}
                 onWheel={handleMouseWheel}
                 onMouseMove={handleMouseMove}>
+                    {breadboard}
                     {elementList}
                 </svg>
                 <canvas
