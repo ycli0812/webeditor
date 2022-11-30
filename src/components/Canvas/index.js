@@ -95,10 +95,14 @@ function Canvas(props) {
     }
 
     function findNearestGridPoint(offsetX, offsetY) {
-        // TODO: 判断最近的点
         let x = Math.floor((offsetX - gridX) / gridSize);
         let y = Math.floor((offsetY - gridY) / gridSize);
-        return {x: x, y: y};
+        let dx = offsetX - gridX - x * gridSize, dy = offsetY - gridY - y * gridSize;
+        console.log('dx,dy', dx, dy);
+        return {
+            x: dx > gridSize / 2 ? (x + 1) : x,
+            y: dy > gridSize / 2 ? (y + 1) : y
+        };
     }
 
     function setElementInitOffset(id, x, y) {

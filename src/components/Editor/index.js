@@ -92,7 +92,12 @@ function Editor(props) {
         setCircuit(updatedCircuit);
     }
 
-    function removeElement(id) {}
+    function removeElement(id) {
+        if(!id in circuit.elementSet) return;
+        delete circuit.elementSet[id];
+        setCircuit({...circuit});
+        setSelectedList([]);
+    }
 
     function addLine(p1, p2) {
         let updatedCircuit = {...circuit};
