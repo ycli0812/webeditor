@@ -61,15 +61,13 @@ const circuitModel = {
             features: [
                 {   
                     name: 'columns',
-                    value: 20,
+                    value: 10,
                     unit: '1'
                 }
             ]
         },
     },
-    connection: [
-        [{x: 0, y: 0}, {x: 1, y: 1}]
-    ]
+    connection: []
 };
 
 export default circuitModel;

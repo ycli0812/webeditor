@@ -7,21 +7,22 @@ import './Canvas.scss';
 // Utils
 
 // Components
-// import { Resistor } from '../Element';
-import Resistor from '../Element/Resistor';
 import WithMouseEvent from '../Element/Wrapper';
+import Resistor from '../Element/Resistor';
 import BreadBoard from '../Element/BreadBoard';
 
 // Context
 import { EditorContext } from '../../utils/EditorContext';
+import Wire from '../Element/Wire';
 
 function Canvas(props) {
     const {
         canvasWidth,            // 画布宽度（像素）
-        canvasHeight,           // 画布高度（像素）
-        elementSet,             // 元件集合
-        onUpdateElementSet      // 更新父组件元件集合
+        canvasHeight            // 画布高度（像素）
     } = props;
+
+    // 使用hook获取Context
+    const editor = useContext(EditorContext);
 
     // 放大系数，最小4，最大20，grid = zoom * 5
     const [zoom, setZoom] = useState(5);
@@ -31,28 +32,32 @@ function Canvas(props) {
     const [gridY, setGridY] = useState(250);
     // 维护每个元件的像素位置（Editor全局的元件列表只存储grid坐标）供拖动时改变，拖动完成时才会更新grid坐标
     const p = {};
-    for(let key in elementSet) {
+    for(let key in editor.circuit.elementSet) {
         p[key] = {
-            x: elementSet[key].x * gridSize,
-            y: elementSet[key].y * gridSize,
+            x: editor.circuit.elementSet[key].x * gridSize,
+            y: editor.circuit.elementSet[key].y * gridSize + gridY,
             initOffsetX: 0,
             initOffsetY: 0
         };
     }
-    const [piexelPosList, setPixelPosList] = useState(p); // 每个元件相对grid中心的像素坐标
-
-    const editor = useContext(EditorContext);
+    const [piexelPosList, setPixelPosList] = useState(p);
+    // 记录最近一次鼠标按下后是否移动
+    const [moved, setMoved] = useState(false);
 
     // 坐标系位置变化时执行
     useEffect(() => {
-        let newPixelSet = {...piexelPosList};
-        for(let key in newPixelSet) {
-            newPixelSet[key].x = elementSet[key].x * gridSize;
-            newPixelSet[key].y = elementSet[key].y * gridSize;
+        const p = {};
+        for(let key in editor.circuit.elementSet) {
+            p[key] = {
+                x: editor.circuit.elementSet[key].x * gridSize,
+                y: editor.circuit.elementSet[key].y * gridSize,
+                initOffsetX: 0,
+                initOffsetY: 0
+            };
         }
-        setPixelPosList(newPixelSet);
+        setPixelPosList(p);
         refreashCanvas();
-    }, [zoom, gridX, gridY, elementSet]);
+    }, [zoom, gridX, gridY]);
 
     function refreashCanvas() {
         let cvs = document.getElementById('real-canvas');
@@ -90,10 +95,14 @@ function Canvas(props) {
     }
 
     function findNearestGridPoint(offsetX, offsetY) {
-        // TODO
+        // TODO: 判断最近的点
+        let x = Math.floor((offsetX - gridX) / gridSize);
+        let y = Math.floor((offsetY - gridY) / gridSize);
+        return {x: x, y: y};
     }
 
     function setElementInitOffset(id, x, y) {
+        if(editor.status == 'wiring') return;
         let newSet = {...piexelPosList};
         newSet[id].initOffsetX = x;
         newSet[id].initOffsetY = y;
@@ -109,6 +118,7 @@ function Canvas(props) {
     function handleMouseDown(ev) {
         ev.preventDefault();
         ev.stopPropagation();
+        setMoved(false);
         let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
         switch(editor.status) {
             case 'default': {
@@ -117,19 +127,69 @@ function Canvas(props) {
                 break;
             }
             case 'adding': {
-                // 准备放置元件
-                let gridPointerX = Math.floor((offsetX - gridX) / gridSize);
-                let gridPointerY = Math.floor((offsetY - gridY) / gridSize);
-                let newSet = {...elementSet};
-                newSet[editor.targetElementId] = {x: gridPointerX, y: gridPointerY, type: 'resistor', selected: false, active: true};
+                // 计算位置
+                const { x, y } = findNearestGridPoint(offsetX, offsetY);
+                // 更新像素坐标   
                 let newPixelSet = {...piexelPosList};
-                newPixelSet[editor.targetElementId] = {x: gridPointerX * gridX, y: gridPointerY * gridY, initOffsetX: 0, initOffsetY: 0};
-                onUpdateElementSet(newSet);
+                newPixelSet[editor.targetElementId] = {
+                    x: x * gridSize,
+                    y: y * gridSize,
+                    initOffsetX: 0,
+                    initOffsetY: 0
+                };
                 setPixelPosList(newPixelSet);
+                // 添加元件
+                editor.addElement(editor.targetElementId, 'resistor', x, y, []);
+                // 更新状态
                 editor.toggleStatus('default');
                 break;
             }
             case 'wiring': {
+                if(editor.anchorPoint == null) {
+                    editor.setAnchorPoint(findNearestGridPoint(offsetX, offsetY));
+                    console.log('set first point');
+                } else {
+                    const pCur = findNearestGridPoint(offsetX, offsetY);
+                    editor.addLine(editor.anchorPoint, pCur);
+                    editor.setAnchorPoint(null);
+                    editor.toggleStatus('default');
+                    console.log('set second point');
+                }
+                break;
+            }
+            default: break;
+        }
+    }
+
+    /**
+     * 鼠标移动时触发，判断按下状态，只有在按下时才会更新虚拟坐标系位置gridX和gridY
+     *
+     * @param {*} ev 事件实例
+     */
+    function handleMouseMove(ev) {
+        ev.preventDefault();
+        let movementX = ev.movementX, movementY = ev.movementY;
+        let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
+        switch(editor.status) {
+            case 'draggingCanvas': {
+                setGridX(gridX + movementX);
+                setGridY(gridY + movementY);
+                setMoved(true);
+                break;
+            }
+            case 'draggingComponent': {
+                const target = editor.targetElementId;
+                let newSet = {...piexelPosList};
+                newSet[target].x = offsetX - gridX - newSet[target].initOffsetX;
+                newSet[target].y = offsetY - gridY - newSet[target].initOffsetY;
+                setPixelPosList(newSet);
+                setMoved(true);
+                break;
+            }
+            case 'wiring': {
+                break;
+            }
+            case 'adding': {
                 break;
             }
             default: break;
@@ -147,50 +207,32 @@ function Canvas(props) {
         switch(editor.status) {
             case 'draggingComponent': {
                 const targetId = editor.targetElementId;
-                let newPixelSet = {...piexelPosList}, newElementSet = {...elementSet};
-                const curX = newPixelSet[targetId].x, curY = newPixelSet[targetId].y;
-                newElementSet[targetId].x = Math.floor(curX / gridSize);
-                newElementSet[targetId].y = Math.floor(curY / gridSize);
+                const { initOffsetX, initOffsetY } = piexelPosList[targetId];
+                let { x, y } = findNearestGridPoint(offsetX - initOffsetX, offsetY - initOffsetY);
+                // 更新像素坐标   
+                let newPixelSet = {...piexelPosList};
                 newPixelSet[targetId] = {
-                    x: newElementSet[targetId].x * gridSize,
-                    y: newElementSet[targetId].y * gridSize,
+                    x: x * gridSize,
+                    y: y * gridSize,
                     initOffsetX: 0,
                     initOffsetY: 0
                 };
-                onUpdateElementSet(newElementSet);
-                // editor.setElementPos(editor.targetElementId, );
                 setPixelPosList(newPixelSet);
+                // 更新Context中的列表
+                editor.setElementPos(targetId, x, y);
+                // 如果moved为假，说明是点击而不是拖动
+                editor.setSelectedList([targetId]);
+                // 更新状态
+                editor.toggleStatus('default');
                 break;
             }
-            default: break;
-        }
-        editor.toggleStatus('default');
-    }
-
-    /**
-     * 鼠标移动时触发，判断按下状态，只有在按下时才会更新虚拟坐标系位置gridX和gridY
-     *
-     * @param {*} ev 事件实例
-     */
-    function handleMouseMove(ev) {
-        ev.preventDefault();
-        let movementX = ev.movementX, movementY = ev.movementY;
-        let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        switch(editor.status) {
             case 'draggingCanvas': {
-                setGridX(gridX + movementX);
-                setGridY(gridY + movementY);
-                break;
-            }
-            case 'draggingComponent': {
-                const target = editor.targetElementId;
-                let newSet = {...piexelPosList};
-                newSet[target].x = offsetX - gridX - newSet[target].initOffsetX;
-                newSet[target].y = offsetY - gridY - newSet[target].initOffsetY;
-                setPixelPosList(newSet);
-                break;
-            }
-            case 'wriing': {
+                // 更新状态
+                editor.toggleStatus('default');
+                // 如果按下后没有移动，清除所有选中
+                if(!moved) {
+                    editor.setSelectedList([]);
+                }
                 break;
             }
             default: break;
@@ -217,8 +259,8 @@ function Canvas(props) {
     // 渲染元件组件
     let elementList = [];
     let breadboard;
-    for(let id in elementSet) {
-        const {x, y, type, selected, active, features} = elementSet[id];
+    for(let id in editor.circuit.elementSet) {
+        const { x, y, type, selected, features } = editor.circuit.elementSet[id];
         switch(type) {
             case 'resistor': {
                 elementList.push(
@@ -254,6 +296,15 @@ function Canvas(props) {
         }
     }
 
+    // 渲染连线
+    let lines = [];
+    const linesModel = editor.circuit.connection;
+    for(let i in linesModel) {
+        lines.push(
+            <Wire zoom={zoom} x1={linesModel[i].start.x} y1={linesModel[i].start.y} x2={linesModel[i].end.x} y2={linesModel[i].end.y}/>
+        );
+    }
+
     return (
         <div id='canvas'>
             <div style={{height: canvasHeight, width: canvasWidth, border: '1px solid #000000'}}>
@@ -268,6 +319,7 @@ function Canvas(props) {
                 onMouseMove={handleMouseMove}>
                     {breadboard}
                     {elementList}
+                    {lines}
                 </svg>
                 <canvas
                     id='real-canvas'

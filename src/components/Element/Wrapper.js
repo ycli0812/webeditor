@@ -19,14 +19,18 @@ function WithMouseEvent(Wrapped, props) {
         onMouseDown     // 按下时更新canvas中的初始偏移
     } = props;
 
+    const editor = useContext(EditorContext);
+
     /**
      * 用回调将元件状态设置为选中，记录按下时指针对元件左上角的像素偏移
      *
      * @param {*} ev 事件实例
      */
      function handleMouseDown(ev){
-        ev.stopPropagation();
-        onMouseDown(id, ev.nativeEvent.offsetX - gridCenter.x - pixelX, ev.nativeEvent.offsetY - gridCenter.y - pixelY);
+        if(editor.status == 'default') {
+            ev.stopPropagation();
+            onMouseDown(id, ev.nativeEvent.offsetX - gridCenter.x - pixelX, ev.nativeEvent.offsetY - gridCenter.y - pixelY);
+        }
     }
 
     return (

@@ -16,15 +16,13 @@ function ElementSample(props) {
     const {
         name,                       // 名称
         imgSrc,                     // 图片url
-        elementSet                  // 当前的元件集合
     } = props;
 
     const editor = useContext(EditorContext);
 
     function addComponent() {
-        let newSet = {...elementSet};
         let i=0;
-        for(; ('R'+String(i)) in newSet; i++);
+        for(; ('R'+String(i)) in editor.circuit.elementSet; i++);
         editor.toggleStatus('adding', 'R'+String(i));
     }
 
@@ -37,14 +35,13 @@ function ElementSample(props) {
 }
 
 function ElementMenu(props) {
-    const {
-        elementSet,
-        onUpdateElementSet
-    } = props;
+    // const {
+    //     onUpdateElementSet
+    // } = props;
 
     return (
         <div id='element-menu'>
-            <ElementSample imgSrc={img_r} name='电阻' {...props} />
+            <ElementSample imgSrc={img_r} name='电阻' />
         </div>
     );
 }
