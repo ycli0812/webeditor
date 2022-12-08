@@ -18,15 +18,13 @@ function Pannel(props) {
                 <div>{features[i].name}:{features[i].value} {features[i].unit}</div>
             );
         }
-        info.push(
-            <button onClick={() => {editor.removeElement(editor.selectedList[0]);}}>delete</button>
-        );
     }
 
     return (
         <div>
             Pennel
             {info}
+            <button onClick={() => {editor.removeElement(editor.selectedList[0]);}}>remove</button>
         </div>
     );
 }

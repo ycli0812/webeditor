@@ -11,22 +11,11 @@ const circuitModel = {
             type: 'resistor',
             x: 0,
             y: 0,
-            selected: false,
             features: [
                 {   
                     name: 'resistance',
                     value: 1.1,
                     unit: 'K om'
-                }
-            ],
-            pins: [
-                {
-                    id: 'p1',
-                    gridPos: {x: 0, y: 0}
-                },
-                {
-                    id: 'p2',
-                    gridPos: {x: 0, y: 0}
                 }
             ]
         },
@@ -40,16 +29,6 @@ const circuitModel = {
                     name: 'resistance',
                     value: 2,
                     unit: 'K om'
-                }
-            ],
-            pins: [
-                {
-                    id: 'p1',
-                    gridPos: {x: 0, y: 0}
-                },
-                {
-                    id: 'p2',
-                    gridPos: {x: 0, y: 0}
                 }
             ]
         },
@@ -66,6 +45,29 @@ const circuitModel = {
                 }
             ]
         },
+        'w1': {
+            type: 'wire',
+            x: 0,
+            y: 0,
+            features: [
+                {
+                    name: 'x1',
+                    value: 0
+                },
+                {
+                    name: 'y1',
+                    value: 0
+                },
+                {
+                    name: 'x2',
+                    value: 1
+                },
+                {
+                    name: 'y2',
+                    value: 2
+                }
+            ]
+        }
     },
     connection: []
 };

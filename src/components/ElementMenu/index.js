@@ -29,7 +29,7 @@ function ElementSample(props) {
     return (
         <div className='element-sample' onClick={addComponent}>
             <img src={imgSrc} alt=''></img>
-            <text>{name}</text>
+            <div>{name}</div>
         </div>
     );
 }

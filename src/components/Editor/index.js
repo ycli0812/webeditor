@@ -20,12 +20,6 @@ import { EditorContext } from '../../utils/EditorContext';
 import circuitModel from '../../utils/CircuitModel';
 
 function Editor(props) {
-    // const [elementSet, setElementSet] = useState({
-    //     'R1': {x: 1, y: 1, type: 'resistor', selected: false, active: true},
-    //     'R2': {x: 1, y: 4, type: 'resistor', selected: false, active: true},
-    //     'BD': {x: 0, y: 0, type: 'breadboard', selected:false, active: true}
-    // });
-
     // Context state
     const [circuit, setCircuit] = useState(circuitModel);
     const [editorStatus, setEditorStatus] = useState('default');
@@ -33,23 +27,12 @@ function Editor(props) {
     const [anchorPoint, setAnchorPoint] = useState(null);
     const [selectedList, setSelectedList] = useState([]);
 
-    function updatedElementSet(newSet) {
-        setCircuit(newSet);
-    }
-
     function toggleStatus(s, targetId) {
         console.log('Editor status:', s, 'Target ID:', targetId);
         setEditorStatus(s);
         setTargetElementId(targetId);
     }
 
-    /**
-     * TODO:
-     * Editor组件应该向下提供修改元件列表的回调
-     * 回调接收的参数应对元件列表的具体结构透明
-     * 这些回调包括：
-     * 增减元件、移动元件位置、修改元件属性、增加和删除连线
-    */
     function addElement(id, type, x, y, features) {
         if(id in circuit.elementSet) {
             console.log('element id exist.');
@@ -60,7 +43,6 @@ function Editor(props) {
             type: type,
             x: x,
             y: y,
-            selected: false,
             features: features
         };
         setCircuit(updatedCircuit);
@@ -93,7 +75,10 @@ function Editor(props) {
     }
 
     function removeElement(id) {
-        if(!id in circuit.elementSet) return;
+        if(!id in circuit.elementSet) {
+            console.log('invalid id');
+            return;
+        }
         delete circuit.elementSet[id];
         setCircuit({...circuit});
         setSelectedList([]);
@@ -101,18 +86,47 @@ function Editor(props) {
 
     function addLine(p1, p2) {
         let updatedCircuit = {...circuit};
-        updatedCircuit.connection.push({
-            start: p1,
-            end: p2
-        });
-        setCircuit(updatedElementSet);
+        let wireNum = 0;
+        while('w' + wireNum in updatedCircuit.elementSet) wireNum++;
+        updatedCircuit.elementSet['w' + wireNum] = {
+            type: 'wire',
+            x: p1.x,
+            y: p1.y,
+            features: [
+                {
+                    name: 'x1',
+                    value: p1.x
+                },
+                {
+                    name:'y1',
+                    value: p1.y
+                },
+                {
+                    name: 'x2',
+                    value: p2.x
+                },
+                {
+                    name: 'y2',
+                    value: p2.y
+                }
+            ]
+        }
+        // updatedCircuit.connection.push({
+        //     start: p1,
+        //     end: p2
+        // });
+        setCircuit(updatedCircuit);
     }
 
-    function removeLine(x1, y1, x2, y2) {}
-
-    /**
-     * 将所有Model集中到Editor组件中！
-    */
+    function removeLine(index) {
+        let updatedCircuit = {...circuit};
+        let removed = [];
+        for(let i in updatedCircuit.connection) {
+            if(i != index) removed.push(updatedCircuit.connection[i]);
+        }
+        updatedCircuit.connection = removed;
+        setCircuit(updatedCircuit);
+    }
 
     return (
         <div id={editorStyle.editor}>

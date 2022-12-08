@@ -1,0 +1,31 @@
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 5px 10px;
+}
+
+.toolbarBtn {
+    height: 30px;
+    width: 30px;
+    background-color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toolbarBtn:hover {
+    background-color: #EEEEEE;
+}
+
+.toolbarBtn:active {
+    background-color: #BBBBBB;
+}
+
+.toolbarBtn img {
+    height: 60%;
+    width: 60%;
+}
