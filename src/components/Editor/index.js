@@ -157,8 +157,8 @@ function Editor(props) {
                     />
                 </div>
                 <div id={editorStyle.right}>
-                    <div>status:{editorStatus}</div>
                     <Pannel />
+                    {/* <div>status:{editorStatus}</div> */}
                 </div>
             </EditorContext.Provider>
         </div>

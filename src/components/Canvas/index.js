@@ -234,11 +234,6 @@ function Canvas(props) {
         setZoom(curZoom);
     }
 
-    // 渲染连线
-    // let lines = editor.circuit.connection.map((line, index) => {
-    //     return <Wire key={index} zoom={zoom} x1={line.start.x} y1={line.start.y} x2={line.end.x} y2={line.end.y}/>;
-    // });
-
     return (
         <div id='canvas'>
             <div style={{height: canvasHeight, width: canvasWidth, border: '1px solid #000000'}}>
@@ -257,8 +252,6 @@ function Canvas(props) {
                     gridCenter={{x: gridX, y: gridY}}
                     clientStatus={piexelPosList}
                     onMouseDown={onMouseDownOnElement}/>
-                    {/* {lines} */}
-                    {/* <WireContainer zoom={zoom}/> */}
                 </svg>
                 <canvas
                     id='real-canvas'
