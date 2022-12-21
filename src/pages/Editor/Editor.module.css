@@ -1,0 +1,19 @@
+#editor {
+    /* border: solid 1px #000000; */
+    display: grid;
+    grid-template-columns: 200px auto 200px;
+}
+
+#left {
+    background-color: #F7F7F7;
+    border-right: solid 2px #EEEEEE;
+}
+
+#middle {
+    
+}
+
+#right {
+    background-color: #F7F7F7;
+    border-left: solid 2px #EEEEEE;
+}

@@ -2,13 +2,13 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Style
-import editorStyle from './Editor.module.scss';
+import editorStyle from './Editor.module.css';
 
 // Component
-import Canvas from '../Canvas';
-import ElementMenu from '../ElementMenu';
-import ToolBar from '../ToolBar';
-import Pannel from '../Pannel';
+import Canvas from '../../components/Canvas';
+import ElementMenu from '../../components/ElementMenu';
+import ToolBar from '../../components/ToolBar';
+import Pannel from '../../components/Pannel';
 
 // Utils
 
@@ -48,22 +48,33 @@ function Editor(props) {
         setCircuit(updatedCircuit);
     }
 
-    function setElementFeature(id, name, value, unit) {
+    function setElementFeature(id, name, value) {
         if(!id in circuit.elementSet) return;
         let updatedCircuit = {...circuit};
         for(let i=0; i<updatedCircuit.elementSet[id].features.length; i++) {
             if(updatedCircuit.elementSet[id].features[i].name == name) {
                 updatedCircuit.elementSet[id].features[i].value = value;
-                updatedCircuit.elementSet[id].features[i].unit = unit;
+                setCircuit(updatedCircuit);
                 return;
             }
         }
-        updatedCircuit.elementSet[id].features.push({
-            name: name,
-            value: value,
-            unit: unit
-        });
-        setCircuit(updatedCircuit);
+        // updatedCircuit.elementSet[id].features.push({
+        //     name: name,
+        //     value: value,
+        //     unit: unit
+        // });
+    }
+
+    function setElementFeatureUnit(id, name, unit) {
+        if(!id in circuit.elementSet) return;
+        let updatedCircuit = {...circuit};
+        for(let i=0; i<updatedCircuit.elementSet[id].features.length; i++) {
+            if(updatedCircuit.elementSet[id].features[i].name == name) {
+                updatedCircuit.elementSet[id].features[i].unit = unit;
+                setCircuit(updatedCircuit);
+                return;
+            }
+        }
     }
 
     function setElementPos(id, x, y) {
@@ -134,6 +145,7 @@ function Editor(props) {
                 circuit: circuit,
                 addElement: addElement,
                 setElementFeature: setElementFeature,
+                setElementFeatureUnit: setElementFeatureUnit,
                 setElementPos: setElementPos,
                 removeElement: removeElement,
                 addLine: addLine,
@@ -152,8 +164,8 @@ function Editor(props) {
                 <div id={editorStyle.middle}>
                     <ToolBar />
                     <Canvas
-                        canvasWidth={document.body.clientWidth - 400}
-                        canvasHeight={700}
+                        canvasWidth={window.innerWidth - 402}
+                        canvasHeight={window.innerHeight - 94}
                     />
                 </div>
                 <div id={editorStyle.right}>

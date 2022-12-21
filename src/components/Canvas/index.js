@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Style
-import './Canvas.scss';
+import canvasStyle from './Canvas.module.css';
 
 // Utils
 
@@ -40,7 +40,7 @@ function Canvas(props) {
     }, [zoom, gridX, gridY, editor.circuit]);
 
     function refreashCanvas() {
-        let cvs = document.getElementById('real-canvas');
+        let cvs = document.getElementById(canvasStyle.realCanvas);
         if (cvs == null) {
             console.error('Canvas: can not find canvas');
         }
@@ -76,11 +76,11 @@ function Canvas(props) {
 
     function refreashClient() {
         let updated = {};
-        for(let id in editor.circuit.elementSet) {
+        for (let id in editor.circuit.elementSet) {
             const { x, y } = editor.circuit.elementSet[id];
             updated[id] = {
-                pixelPos: {x: x * gridSize, y: y * gridSize},
-                initOffset: {x: 0, y: 0},
+                pixelPos: { x: x * gridSize, y: y * gridSize },
+                initOffset: { x: 0, y: 0 },
                 selected: false
             }
         }
@@ -98,23 +98,23 @@ function Canvas(props) {
     }
 
     function onMouseDownOnElement(id, x, y) {
-        if(editor.status == 'wiring') return;
-        let newSet = {...piexelPosList};
+        if (editor.status == 'wiring') return;
+        let newSet = { ...piexelPosList };
         newSet[id].initOffset = { x, y };
         // newSet[id].initOffsetX = x;
         // newSet[id].initOffsetY = y;
         setPixelPosList(newSet);
         editor.toggleStatus('draggingComponent', id);
     }
-    
-    function onMouseDownOnWire(index, x, y) {}
+
+    function onMouseDownOnWire(index, x, y) { }
 
     function handleMouseDown(ev) {
         ev.preventDefault();
         ev.stopPropagation();
         setMoved(false);
         let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        switch(editor.status) {
+        switch (editor.status) {
             case 'default': {
                 // default状态下按下鼠标，进入拖拽模式
                 editor.toggleStatus('draggingCanvas');
@@ -124,20 +124,20 @@ function Canvas(props) {
                 // 计算位置
                 const { x, y } = findNearestGridPoint(offsetX, offsetY);
                 // 更新像素坐标   
-                let newPixelSet = {...piexelPosList};
+                let newPixelSet = { ...piexelPosList };
                 newPixelSet[editor.targetElementId] = {
-                    pixelPos: {x: x * gridSize, y: y * gridSize},
-                    initOffset: {x: 0, y: 0}
+                    pixelPos: { x: x * gridSize, y: y * gridSize },
+                    initOffset: { x: 0, y: 0 }
                 };
                 setPixelPosList(newPixelSet);
                 // 添加元件
-                editor.addElement(editor.targetElementId, 'resistor', x, y, [{name: 'resistace', value: 1, unit: 'om'}]);
+                editor.addElement(editor.targetElementId, 'resistor', x, y, [{ name: 'resistace', value: 1, unit: 'om' }]);
                 // 更新状态
                 editor.toggleStatus('default');
                 break;
             }
             case 'wiring': {
-                if(editor.anchorPoint == null) {
+                if (editor.anchorPoint == null) {
                     editor.setAnchorPoint(findNearestGridPoint(offsetX, offsetY));
                     console.log('set first point');
                 } else {
@@ -157,7 +157,7 @@ function Canvas(props) {
         ev.preventDefault();
         let movementX = ev.movementX, movementY = ev.movementY;
         let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        switch(editor.status) {
+        switch (editor.status) {
             case 'draggingCanvas': {
                 setGridX(gridX + movementX);
                 setGridY(gridY + movementY);
@@ -166,7 +166,7 @@ function Canvas(props) {
             }
             case 'draggingComponent': {
                 const target = editor.targetElementId;
-                let updated = {...piexelPosList};
+                let updated = { ...piexelPosList };
                 updated[target].pixelPos = {
                     x: offsetX - gridX - updated[target].initOffset.x,
                     y: offsetY - gridY - updated[target].initOffset.y
@@ -188,16 +188,16 @@ function Canvas(props) {
     function handleMouseUp(ev) {
         ev.preventDefault();
         let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        switch(editor.status) {
+        switch (editor.status) {
             case 'draggingComponent': {
                 const targetId = editor.targetElementId;
                 const { x: initOffsetX, y: initOffsetY } = piexelPosList[targetId].initOffset;
                 let { x, y } = findNearestGridPoint(offsetX - initOffsetX, offsetY - initOffsetY);
                 // 更新像素坐标   
-                let newPixelSet = {...piexelPosList};
+                let newPixelSet = { ...piexelPosList };
                 newPixelSet[targetId] = {
-                    pixelPos: {x: x * gridSize, y: y * gridSize},
-                    initOffset: {x: 0, y: 0},
+                    pixelPos: { x: x * gridSize, y: y * gridSize },
+                    initOffset: { x: 0, y: 0 },
                     selected: false
                 };
                 setPixelPosList(newPixelSet);
@@ -213,7 +213,7 @@ function Canvas(props) {
                 // 更新状态
                 editor.toggleStatus('default');
                 // 如果按下后没有移动，清除所有选中
-                if(!moved) {
+                if (!moved) {
                     editor.setSelectedList([]);
                 }
                 break;
@@ -235,10 +235,9 @@ function Canvas(props) {
     }
 
     return (
-        <div id='canvas'>
-            <div style={{height: canvasHeight, width: canvasWidth, border: '1px solid #000000'}}>
-                <svg
-                id='_elements-container_'
+        <div id={canvasStyle.canvas} style={{height: canvasHeight, width: canvasWidth }}>
+            <svg
+                id={canvasStyle.elementsContainer}
                 height={canvasHeight}
                 width={canvasWidth}
                 viewBox={[-gridX, -gridY, canvasWidth, canvasHeight]}
@@ -246,19 +245,18 @@ function Canvas(props) {
                 onMouseUp={handleMouseUp}
                 onWheel={handleMouseWheel}
                 onMouseMove={handleMouseMove}>
-                    <ElementContainer
+                <ElementContainer
                     zoom={zoom}
                     wireWidth={2}
-                    gridCenter={{x: gridX, y: gridY}}
+                    gridCenter={{ x: gridX, y: gridY }}
                     clientStatus={piexelPosList}
-                    onMouseDown={onMouseDownOnElement}/>
-                </svg>
-                <canvas
-                    id='real-canvas'
-                    height={canvasHeight}
-                    width={canvasWidth}>
-                </canvas>    
-            </div>
+                    onMouseDown={onMouseDownOnElement} />
+            </svg>
+            <canvas
+                id={canvasStyle.realCanvas}
+                height={canvasHeight}
+                width={canvasWidth}>
+            </canvas>
         </div>
     );
 }

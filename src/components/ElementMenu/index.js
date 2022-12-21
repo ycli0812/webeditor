@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Style
-import './ElementMenu.scss';
+import elementMenuStyle from './ElementMenu.module.css';
 
 // Utils
 
@@ -10,7 +10,7 @@ import './ElementMenu.scss';
 import { EditorContext } from '../../utils/EditorContext';
 
 //Images
-import img_r from '../../res/resistor.svg';
+import img_r from '../../res/elementIcon/resistor.svg';
 
 function ElementSample(props) {
     const {
@@ -27,9 +27,9 @@ function ElementSample(props) {
     }
 
     return (
-        <div className='element-sample' onClick={addComponent}>
+        <div className={elementMenuStyle.elementSample} onClick={addComponent}>
             <img src={imgSrc} alt=''></img>
-            <div>{name}</div>
+            <div selectable={false}>{name}</div>
         </div>
     );
 }
@@ -40,7 +40,7 @@ function ElementMenu(props) {
     // } = props;
 
     return (
-        <div id='element-menu'>
+        <div id={elementMenuStyle.elementMenu}>
             <ElementSample imgSrc={img_r} name='电阻' />
         </div>
     );

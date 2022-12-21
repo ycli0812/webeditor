@@ -18,12 +18,6 @@ function Pannel(props) {
     const type = editor.circuit.elementSet[editor.selectedList[0]].type;
     const id = editor.selectedList[0];
     const features = editor.circuit.elementSet[editor.selectedList[0]].features;
-    // info.push(<div>{type} {editor.selectedList[0]}</div>);
-    // for(let i in features) {
-    //     info.push(
-    //         <div>{features[i].name}:{features[i].value} {features[i].unit}</div>
-    //     );
-    // }
     // 渲染面板数据
     switch (type) {
         case 'resistor': {
@@ -32,11 +26,11 @@ function Pannel(props) {
                     <div className={panelStyle.title}>属性</div>
                     <div className={panelStyle.subtitle}>电阻</div>
                     <div className={panelStyle.editable}>
-                        <div className={panelStyle.content} contentEditable onFocus={handleFocus} onBlur={handleBlur}>{features[0].value}</div>
-                        <select className={panelStyle.unit} onChange={handleChange}>
-                            <option value='om'>Ω</option>
-                            <option value='kom'>KΩ</option>
-                            <option value='mom'>MΩ</option>
+                        <div className={panelStyle.content} contentEditable id={'resistance'} onBlur={(ev) => handleBlur(ev, 'resistance', id, features[0].name)}>{features[0].value}</div>
+                        <select className={panelStyle.unit} onChange={(ev) => handleChange(ev, id, features[0].name)}>
+                            <option value='om' selected={features[0].unit=='om'}>Ω</option>
+                            <option value='kom' selected={features[0].unit=='kom'}>KΩ</option>
+                            <option value='mom' selected={features[0].unit=='mom'}>MΩ</option>
                         </select>
                     </div>
                 </div>
@@ -52,14 +46,18 @@ function Pannel(props) {
         console.log('focus', ev);
     }
 
-    function handleBlur(ev) {
-        const { value } = ev.target;
-        console.log('lose focus', value);
+    function handleBlur(ev, domId, eId, name) {
+        const content = Number(document.getElementById(domId).innerHTML);
+        console.log(content);
+        if(content != NaN) {
+            editor.setElementFeature(eId, name, content);
+        }
     }
 
-    function handleChange(ev) {
+    function handleChange(ev, eId, name) {
         const { value } = ev.target;
         console.log('change', value);
+        editor.setElementFeatureUnit(eId, name, value);
     }
 
     return (

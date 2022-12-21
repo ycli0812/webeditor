@@ -7,6 +7,7 @@ const EditorContext = createContext({
     circuit: circuitModel,
     addElement: () => {},
     setElementFeature: () => {},
+    setElementFeatureUnit: () => {},
     setElementPos: () => {},
     removeElement: () => {},
     addLine: () => {},

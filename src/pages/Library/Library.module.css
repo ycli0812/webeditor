@@ -1,0 +1,50 @@
+.library {
+    padding: 20px 50px;
+}
+
+.titleText {
+    width: fit-content;
+    font-size: 26px;
+    font-weight: bold;
+    border-bottom: 4px solid #0F329C;
+    padding: 5px 0;
+}
+
+.designList {
+    width: 40%;
+    margin: 10px 0;
+    padding: 0;
+}
+
+.design {
+    height: 40px;
+    display: grid;
+    grid-template-columns: 40px auto 200px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.design:hover {
+    background-color: #EEEEEE;
+}
+
+.design img {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.filename {
+    font-size: 14px;
+    color: #444444;
+    margin-left: 10px;
+    font-family: 'SimHei';
+}
+
+.editTime {
+    font-size: 14px;
+    color: #999999;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: right;
+    margin-right: 10px;
+}

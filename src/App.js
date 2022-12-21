@@ -1,15 +1,23 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import './App.css';
 
 // Components
-import Editor from './components/Editor';
+import Navbar from './components/Navbar';
+import Editor from './pages/Editor';
+import Library from './pages/Library';
 
 function App() {
   return (
-    <div className="App">
-      <Editor
-        designUrl={'url_str'}
-      />
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <Navbar />
+        <Routes>
+          <Route path='/editor/:filename' element={<Editor />}></Route>
+          <Route path='/' element={<Library />}></Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
