@@ -27,10 +27,23 @@ function Pannel(props) {
                     <div className={panelStyle.subtitle}>电阻</div>
                     <div className={panelStyle.editable}>
                         <div className={panelStyle.content} contentEditable id={'resistance'} onBlur={(ev) => handleBlur(ev, 'resistance', id, features[0].name)}>{features[0].value}</div>
-                        <select className={panelStyle.unit} onChange={(ev) => handleChange(ev, id, features[0].name)}>
+                        <select className={panelStyle.unit} onChange={(ev) => editor.setElementFeatureUnit(id, features[0].name, ev.target.value)}>
                             <option value='om' selected={features[0].unit=='om'}>Ω</option>
                             <option value='kom' selected={features[0].unit=='kom'}>KΩ</option>
                             <option value='mom' selected={features[0].unit=='mom'}>MΩ</option>
+                        </select>
+                    </div>
+                    <div className={panelStyle.subtitle}>误差范围</div>
+                    <div className={panelStyle.editable}>
+                        <select className={panelStyle.unit} onChange={(ev) => editor.setElementFeature(id, features[1].name, ev.target.value)}>
+                            <option value='0.05%' selected={features[1].value=='0.05%'}>0.05%</option>
+                            <option value='0.1%' selected={features[1].value=='0.1%'}>0.1%</option>
+                            <option value='0.25%' selected={features[1].value=='0.25%'}>0.25%</option>
+                            <option value='0.5%' selected={features[1].value=='0.5%'}>0.5%</option>
+                            <option value='1%' selected={features[1].value=='1%'}>1%</option>
+                            <option value='2%' selected={features[1].value=='2%'}>2%</option>
+                            <option value='5%' selected={features[1].value=='5%'}>5%</option>
+                            <option value='10%' selected={features[1].value=='10%'}>10%</option>
                         </select>
                     </div>
                 </div>
@@ -52,12 +65,6 @@ function Pannel(props) {
         if(content != NaN) {
             editor.setElementFeature(eId, name, content);
         }
-    }
-
-    function handleChange(ev, eId, name) {
-        const { value } = ev.target;
-        console.log('change', value);
-        editor.setElementFeatureUnit(eId, name, value);
     }
 
     return (

@@ -16,6 +16,10 @@ const circuitModel = {
                     name: 'resistance',
                     value: 1.1,
                     unit: 'K om'
+                },
+                {
+                    name: 'tolerance',
+                    value: '1%'
                 }
             ]
         },
@@ -29,6 +33,10 @@ const circuitModel = {
                     name: 'resistance',
                     value: 2,
                     unit: 'K om'
+                },
+                {
+                    name: 'tolerance',
+                    value: '1%'
                 }
             ]
         },
@@ -42,6 +50,10 @@ const circuitModel = {
                     name: 'columns',
                     value: 10,
                     unit: '1'
+                },
+                {
+                    name: 'tolerance',
+                    value: '1%'
                 }
             ]
         },

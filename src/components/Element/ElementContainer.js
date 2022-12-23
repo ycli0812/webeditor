@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom/client';
 // Context
 import { EditorContext } from '../../utils/EditorContext';
 
+// Utils
+import computeColorRing from '../../utils/ColorRing';
+
 function ElementContainer(props) {
     const {
         zoom,           // 放大倍数，grid边长=zoom*5
@@ -31,6 +34,7 @@ function ElementContainer(props) {
         const { x: pixelX, y: pixelY } = clientStatus[id].pixelPos;
         switch (type) {
             case 'resistor': {
+                const rings = computeColorRing(features[0].value, features[0].unit, features[1].value);
                 elementList.push(
                     <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)}>
                         <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />
@@ -38,6 +42,11 @@ function ElementContainer(props) {
                             stroke='#000' fill='#000000' />
                         <rect id='wire-left' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX} strokeWidth='0'
                             stroke='#000' fill='#000000' />
+                        <rect id='ring1' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.2} fill={rings[0]} />
+                        <rect id='ring2' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.5} fill={rings[1]} />
+                        <rect id='ring3' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.8} fill={rings[2]} />
+                        <rect id='ring4' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 1.1} fill={rings[3]} />
+                        <rect id='ring5' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize * 3 - gridSize * 0.4} fill={rings[4]} />
                     </g>
                 );
                 break;

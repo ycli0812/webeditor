@@ -8,6 +8,9 @@ import libraryStyle from './Library.module.css';
 // Images
 import blueprint from '../../res/blueprint.svg';
 
+// Utils
+import { getDesignList } from '../../utils/Request';
+
 function ListItem(props) {
     const {
         fileName,
@@ -26,7 +29,23 @@ function ListItem(props) {
 
 function Library(props) {
     const navigate = useNavigate();
+
+    const [designList, setDesignList] = useState([]);
+
     // 向服务器请求
+    useEffect(() => {
+        getDesignList().then((res) => {
+            console.log(res);
+            setDesignList(res.data);
+        });
+    }, []);
+
+    const designs = designList.map((item, index) => {
+        return (
+            <ListItem key={index} fileName={item.filename} editTime={item.editTime} onClick={() => {navigate('/editor/' + item.filename)}} />
+        );
+    });
+
     return (
         <div className={libraryStyle.library}>
             <div className={libraryStyle.title}>
@@ -38,9 +57,10 @@ function Library(props) {
                     <div className={libraryStyle.filename}>文件名</div>
                     <div className={libraryStyle.editTime}>2022-12-21 00:12:57</div>
                 </div> */}
-                <ListItem fileName='design1' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design1')}} />
+                {/* <ListItem fileName='design1' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design1')}} />
                 <ListItem fileName='design2' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design2')}} />
-                <ListItem fileName='design3' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design3')}} />
+                <ListItem fileName='design3' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design3')}} /> */}
+                {designs}
             </div>
         </div>
     );
