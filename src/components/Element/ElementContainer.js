@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Context
-import { EditorContext } from '../../utils/EditorContext';
+import { EditorContext } from '../../utils/Context';
 
 // Utils
 import computeColorRing from '../../utils/ColorRing';

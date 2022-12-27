@@ -11,7 +11,7 @@ import ElementContainer from '../Element/ElementContainer';
 import WireContainer from '../Element/WireContainer';
 
 // Context
-import { EditorContext } from '../../utils/EditorContext';
+import { EditorContext } from '../../utils/Context';
 
 function Canvas(props) {
     const {
@@ -131,7 +131,10 @@ function Canvas(props) {
                 };
                 setPixelPosList(newPixelSet);
                 // 添加元件
-                editor.addElement(editor.targetElementId, 'resistor', x, y, [{ name: 'resistace', value: 1, unit: 'om' }]);
+                editor.addElement(editor.targetElementId, 'resistor', x, y, [
+                    { name: 'resistace', value: 1, unit: 'om' },
+                    { name: 'tolerance', value: '1%' }
+                ]);
                 // 更新状态
                 editor.toggleStatus('default');
                 break;
@@ -235,7 +238,7 @@ function Canvas(props) {
     }
 
     return (
-        <div id={canvasStyle.canvas} style={{height: canvasHeight, width: canvasWidth }}>
+        <div id={canvasStyle.canvas} style={{ height: canvasHeight, width: canvasWidth }}>
             <svg
                 id={canvasStyle.elementsContainer}
                 height={canvasHeight}

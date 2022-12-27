@@ -18,7 +18,12 @@ const EditorContext = createContext({
     anchorPoint: {x: 0, y: 0},
     setAnchorPoint: () => {},
     selectedList: [],
-    setSelectedList: () => {}
+    setSelectedList: () => {},
 });
 
-export { EditorContext };
+const GlobalContext = createContext({
+    modified: false,
+    setModified: () => {}
+});
+
+export { EditorContext, GlobalContext };

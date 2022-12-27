@@ -7,7 +7,7 @@ import elementMenuStyle from './ElementMenu.module.css';
 // Utils
 
 // Context
-import { EditorContext } from '../../utils/EditorContext';
+import { EditorContext } from '../../utils/Context';
 
 //Images
 import img_r from '../../res/elementIcon/resistor.svg';

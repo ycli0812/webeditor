@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
+import { useParams } from 'react-router-dom';
 
 // Style
 import toolbarStyle from './ToolBar.module.css';
@@ -10,13 +11,27 @@ import wire from '../../res/icon_development_git-commit.svg';
 import upload from '../../res/upload.svg';
 
 // Context
-import { EditorContext } from '../../utils/EditorContext';
+import { EditorContext, GlobalContext } from '../../utils/Context';
+
+// Utils
+import { saveDesign } from '../../utils/Request';
 
 function ToolBar(props) {
     const editor = useContext(EditorContext);
+    const global = useContext(GlobalContext);
 
+    const { filename } = useParams();
+    console.log(filename);
     function uploadCircuit(ev) {
         console.log('upload circuit');
+        saveDesign(filename, editor.circuit).then((res) => {
+            console.log(res);
+            alert('保存成功');
+            global.setModified(false);
+        }).catch((res) => {
+            console.log(res);
+            alert('保存失败');
+        });
     }
 
     function changePointer(ev) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Style
 import editorStyle from './Editor.module.css';
@@ -11,21 +12,46 @@ import ToolBar from '../../components/ToolBar';
 import Pannel from '../../components/Pannel';
 
 // Utils
+import { getDesign } from '../../utils/Request';
 
 // Context
 // 当前编辑器状态，合法值：default, wiring, placing, draggingComp, dragginCanvas
-import { EditorContext } from '../../utils/EditorContext';
+import { EditorContext, GlobalContext } from '../../utils/Context';
 
 // Model and Data
 import circuitModel from '../../utils/CircuitModel';
+import Navbar from '../../components/Navbar';
 
 function Editor(props) {
     // Context state
-    const [circuit, setCircuit] = useState(circuitModel);
+    const [circuit, setCircuit] = useState({});
     const [editorStatus, setEditorStatus] = useState('default');
     const [targetElementId, setTargetElementId] = useState('');
     const [anchorPoint, setAnchorPoint] = useState(null);
     const [selectedList, setSelectedList] = useState([]);
+
+    // 初始化，请求电路模型
+    const navTo = useNavigate();
+    const { filename } = useParams();
+    useEffect(() => {
+        getDesign(filename).then((res) => {
+            console.log(res);
+            setCircuit(res.data);
+        }).catch((res) => {
+            console.log(res);
+            alert('找不到文件' + filename);
+            navTo('/');
+        }).finally(() => {
+            console.log('init done');
+            global.setModified(false);
+        });
+    }, []);
+
+    const global = useContext(GlobalContext);
+    useEffect(() => {
+        global.setModified(true);
+        console.log('Editor set modified true', circuit);
+    }, [circuit]);
 
     function toggleStatus(s, targetId) {
         console.log('Editor status:', s, 'Target ID:', targetId);
