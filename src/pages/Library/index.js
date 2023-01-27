@@ -37,6 +37,11 @@ function Library(props) {
         getDesignList().then((res) => {
             console.log(res);
             setDesignList(res.data);
+        }).catch((res) => {
+            setDesignList([{
+                filename: 'network_error_default_file.json',
+                editTime: '2023-01-01'
+            }]);
         });
     }, []);
 
@@ -52,14 +57,6 @@ function Library(props) {
                 <div className={libraryStyle.titleText}>我的设计</div>
             </div>
             <div className={libraryStyle.designList}>
-                {/* <div className={libraryStyle.design}>
-                    <img alt='' src={blueprint}></img>
-                    <div className={libraryStyle.filename}>文件名</div>
-                    <div className={libraryStyle.editTime}>2022-12-21 00:12:57</div>
-                </div> */}
-                {/* <ListItem fileName='design1' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design1')}} />
-                <ListItem fileName='design2' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design2')}} />
-                <ListItem fileName='design3' editTime='2022-12-21 00:12:57' onClick={() => {navigate('/editor/design3')}} /> */}
                 {designs}
             </div>
         </div>

@@ -6,15 +6,15 @@ import { useParams } from 'react-router-dom';
 import toolbarStyle from './ToolBar.module.css';
 
 // Images
-import select from '../../res/select-cursor.svg';
-import wire from '../../res/icon_development_git-commit.svg';
-import upload from '../../res/upload.svg';
+import select from '../../../../res/select-cursor.svg';
+import wire from '../../../../res/icon_development_git-commit.svg';
+import upload from '../../../../res/upload.svg';
 
 // Context
-import { EditorContext, GlobalContext } from '../../utils/Context';
+import { GlobalContext, EditorContext } from '../../../../utils/Context';
 
 // Utils
-import { saveDesign } from '../../utils/Request';
+import { saveDesign } from '../../../../utils/Request';
 
 function ToolBar(props) {
     const editor = useContext(EditorContext);

@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
-import circuitModel from './CircuitModel';
+// import circuitModel from './CircuitModel';
 
 const validStatus = ['default', 'wiring', 'draggingComponent', 'deaggingCanvas', 'adding'];
 
 const EditorContext = createContext({
-    circuit: circuitModel,
+    circuit: {},
     addElement: () => {},
     setElementFeature: () => {},
     setElementFeatureUnit: () => {},
@@ -19,6 +19,8 @@ const EditorContext = createContext({
     setAnchorPoint: () => {},
     selectedList: [],
     setSelectedList: () => {},
+    restoredElement: {},
+    setRestoredElement: () => {}
 });
 
 const GlobalContext = createContext({

@@ -1,0 +1,63 @@
+.subtitle {
+    font-size: 12px;
+    margin: 0 0 2px 5px;
+    color: #777777;
+}
+
+.fetureInput {
+    min-height: 24px;
+    max-height: 40px;
+    width: 160px;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    /* background-color: #EEEEEE; */
+    display: grid;
+    /* grid-template-columns: 20px auto 50px; */
+    column-gap: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* padding: 3px; */
+}
+
+.fetureInput select {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fetureInput input {
+    width: 100%;
+    outline: none;
+    /* outline-width: 1px; */
+    /* padding: 5px; */
+    border-bottom: 1px solid #000000;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    /* border: none; */
+    background-color: transparent;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.value {
+    font-size: 14px;
+    line-height: 20px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.icon {
+    height: 16px;
+}
+
+.icon img {
+    height: 100%;
+}

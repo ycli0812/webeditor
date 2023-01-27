@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://localhost:8080';
+
 function getDesignList() {
     const designList = axios.get(
-        'http://localhost:8080/designlist'
+        '/designlist'
     );
     return designList;
 }
@@ -10,7 +12,7 @@ function getDesignList() {
 function getDesign(filename) {
     const design = axios({
         method: 'post',
-        url: 'http://localhost:8080/design',
+        url: '/design',
         params: {
             filename: filename
         }
@@ -21,7 +23,7 @@ function getDesign(filename) {
 function saveDesign(filename, circuit) {
     const resp = axios({
         method: 'post',
-        url: 'http://localhost:8080/save',
+        url: '/save',
         data: {
             file: filename,
             content: circuit

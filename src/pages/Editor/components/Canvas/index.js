@@ -11,7 +11,7 @@ import ElementContainer from '../Element/ElementContainer';
 import WireContainer from '../Element/WireContainer';
 
 // Context
-import { EditorContext } from '../../utils/Context';
+import { EditorContext } from '../../../../utils/Context';
 
 function Canvas(props) {
     const {
@@ -104,10 +104,11 @@ function Canvas(props) {
         // newSet[id].initOffsetX = x;
         // newSet[id].initOffsetY = y;
         setPixelPosList(newSet);
-        editor.toggleStatus('draggingComponent', id);
+        editor.toggleStatus({
+            status: 'draggingComponent',
+            targetId: id
+        });
     }
-
-    function onMouseDownOnWire(index, x, y) { }
 
     function handleMouseDown(ev) {
         ev.preventDefault();
@@ -117,7 +118,9 @@ function Canvas(props) {
         switch (editor.status) {
             case 'default': {
                 // default状态下按下鼠标，进入拖拽模式
-                editor.toggleStatus('draggingCanvas');
+                editor.toggleStatus({
+                    status: 'draggingCanvas'
+                });
                 break;
             }
             case 'adding': {
@@ -131,12 +134,16 @@ function Canvas(props) {
                 };
                 setPixelPosList(newPixelSet);
                 // 添加元件
-                editor.addElement(editor.targetElementId, 'resistor', x, y, [
-                    { name: 'resistace', value: 1, unit: 'om' },
-                    { name: 'tolerance', value: '1%' }
-                ]);
+                // editor.addElement(editor.targetElementId, 'resistor', x, y, [
+                //     { name: 'resistace', value: 1, unit: 'om' },
+                //     { name: 'tolerance', value: '1%' }
+                // ]);
+                // console.log('to add:', editor.targetElementId, editor.targetFeature);
+                editor.addElement(editor.targetElementId, editor.targetElementType, x, y, editor.targetFeature);
                 // 更新状态
-                editor.toggleStatus('default');
+                editor.toggleStatus({
+                    status: 'default'
+                });
                 break;
             }
             case 'wiring': {
@@ -147,7 +154,9 @@ function Canvas(props) {
                     const pCur = findNearestGridPoint(offsetX, offsetY);
                     editor.addLine(editor.anchorPoint, pCur);
                     editor.setAnchorPoint(null);
-                    editor.toggleStatus('default');
+                    editor.toggleStatus({
+                        status: 'default'
+                    });
                     console.log('set second point');
                 }
                 break;
@@ -209,12 +218,16 @@ function Canvas(props) {
                 // 如果moved为假，说明是点击而不是拖动
                 editor.setSelectedList([targetId]);
                 // 更新状态
-                editor.toggleStatus('default');
+                editor.toggleStatus({
+                    status: 'default'
+                });
                 break;
             }
             case 'draggingCanvas': {
                 // 更新状态
-                editor.toggleStatus('default');
+                editor.toggleStatus({
+                    status: 'default'
+                });
                 // 如果按下后没有移动，清除所有选中
                 if (!moved) {
                     editor.setSelectedList([]);

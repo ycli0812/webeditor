@@ -1,0 +1,77 @@
+{
+    "elementSet": {
+        "R1": {
+            "type": "resistor",
+            "x": 1,
+            "y": 1,
+            "features": [
+                {
+                    "name": "resistance",
+                    "value": 2,
+                    "unit": "kom"
+                },
+                {
+                    "name": "tolerance",
+                    "value": "0.25%"
+                }
+            ]
+        },
+        "R2": {
+            "type": "resistor",
+            "x": 5,
+            "y": 4,
+            "selected": false,
+            "features": [
+                {
+                    "name": "resistance",
+                    "value": 2,
+                    "unit": "kom"
+                },
+                {
+                    "name": "tolerance",
+                    "value": "1%"
+                }
+            ]
+        },
+        "BD1": {
+            "type": "breadboard",
+            "x": 0,
+            "y": 0,
+            "selected": false,
+            "features": [
+                {
+                    "name": "columns",
+                    "value": 10
+                }
+            ]
+        },
+        "w0": {
+            "type": "wire",
+            "x": 5,
+            "y": 2,
+            "features": [
+                {
+                    "name": "x1",
+                    "value": 5
+                },
+                {
+                    "name": "y1",
+                    "value": 2
+                },
+                {
+                    "name": "x2",
+                    "value": 5
+                },
+                {
+                    "name": "y2",
+                    "value": 5
+                },
+                {
+                    "name": "color",
+                    "value": "#000000"
+                }
+            ]
+        }
+    },
+    "connection": []
+}

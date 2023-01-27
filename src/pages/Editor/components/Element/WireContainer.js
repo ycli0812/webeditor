@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Context
-import { EditorContext } from '../../utils/Context';
+import { EditorContext } from '../../../../utils/Context';
 
 function WireContainer(props) {
     const {
