@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { store } from './store';
+import { Provider } from 'react-redux';
 
 import './App.css';
 
@@ -17,13 +19,15 @@ function App() {
   return (
     <BrowserRouter>
       <GlobalContext.Provider value={{ modified, setModified }}>
-        <div className="app">
-          <Navbar />
-          <Routes>
-            <Route path='/editor/:filename' element={<Editor />}></Route>
-            <Route path='/' element={<Library />}></Route>
-          </Routes>
-        </div>
+        <Provider store={store}>
+          <div className="app">
+            <Navbar />
+            <Routes>
+              <Route path='/editor/:filename' element={<Editor />}></Route>
+              <Route path='/' element={<Library />}></Route>
+            </Routes>
+          </div>
+        </Provider>
       </GlobalContext.Provider>
     </BrowserRouter>
   );

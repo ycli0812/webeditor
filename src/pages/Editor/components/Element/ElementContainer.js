@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Context
 import { EditorContext } from '../../../../utils/Context';
@@ -34,20 +35,25 @@ function ElementContainer(props) {
         onMouseDown     // 按下时更新canvas中的初始偏移
     } = props;
 
-    const editor = useContext(EditorContext);
+    // const editor = useContext(EditorContext);
+    const dispatch = useDispatch();
+    const circuit = useSelector(state => state.circuit.circuit);
+    const status = useSelector(state => state.editor.status);
+    const targetElement = useSelector(state => state.editor.target);
+    const anchorPoint = useSelector(state => state.editor.anchorPoint);
 
     const gridSize = zoom * 5;
 
     function handleMouseDown(ev, id, x, y) {
-        if (editor.status == 'default') {
+        if (status == 'default') {
             ev.stopPropagation();
             onMouseDown(id, ev.nativeEvent.offsetX - gridCenter.x - x, ev.nativeEvent.offsetY - gridCenter.y - y);
         }
     }
 
     let breadboards = [], elementList = [];
-    for (let id in editor.circuit.elementSet) {
-        const { type, features } = editor.circuit.elementSet[id];
+    for (let id in circuit.elementSet) {
+        const { type, features } = circuit.elementSet[id];
         if (!clientStatus[id]) continue;
         const { x: pixelX, y: pixelY } = clientStatus[id].pixelPos;
         switch (type) {

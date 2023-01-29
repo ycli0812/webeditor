@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Style
 import toolbarStyle from './ToolBar.module.css';
@@ -20,14 +21,16 @@ function ToolBar(props) {
     const editor = useContext(EditorContext);
     const global = useContext(GlobalContext);
 
+    const { circuit } = useSelector(state => state.circuit);
+
     const { filename } = useParams();
     console.log(filename);
     function uploadCircuit(ev) {
         console.log('upload circuit');
-        saveDesign(filename, editor.circuit).then((res) => {
+        saveDesign(filename, circuit).then((res) => {
             console.log(res);
             alert('保存成功');
-            global.setModified(false);
+            // global.setModified(false);
         }).catch((res) => {
             console.log(res);
             alert('保存失败');

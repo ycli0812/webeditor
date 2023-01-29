@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Style
 import navbarStyle from './Navbar.module.css';
@@ -15,11 +16,16 @@ function Navbar(props) {
     const navTo = useNavigate();
     // const { filename } = useParams();
     const filename = useLocation().pathname.split('/')[2];;
-    const global = useContext(GlobalContext);
+    // const global = useContext(GlobalContext);
+    const { modified } = useSelector(state => state.editor);
 
     function toLibrary(ev) {
-        if(global.modified) {
-            alert('请先保存');
+        if (modified) {
+            // alert('请先保存');
+            let res = window.confirm('您还未保存，离开将丢失修改，确定要离开吗？');
+            if (res) {
+                navTo('/');
+            } else { }
         } else {
             navTo('/');
         }

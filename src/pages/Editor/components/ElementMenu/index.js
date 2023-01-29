@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Style
 import elementMenuStyle from './ElementMenu.module.css';
@@ -11,6 +12,10 @@ import { EditorContext } from '../../../../utils/Context';
 
 //Images
 import img_r from '../../../../res/elementIcon/resistor.svg';
+
+// Redux actions
+import { setEditorStatus, setTragetElement } from '../../actions/editorEventActions';
+import { generateTypeId } from '../../../../utils/IdGenerator';
 
 function useRequestElementList() {
     const [templates, setTemplates] = useState([]);
@@ -56,21 +61,21 @@ function ElementSample(props) {
         features,
     } = props;
 
-    const editor = useContext(EditorContext);
+    // const editor = useContext(EditorContext);
+    const dispatch = useDispatch();
+    const { elementSet } = useSelector(state => state.circuit.circuit);
 
-    function addComponent() {
-        let i=0;
-        for(; (type+String(i)) in editor.circuit.elementSet; i++);
-        editor.toggleStatus({
-            status: 'adding',
-            targetId:  type+String(i),
-            targetFeature: features,
-            targetType: type
-        });
+    function handleClick() {
+        dispatch(setEditorStatus('adding'));
+        dispatch(setTragetElement({
+            id: generateTypeId(type, elementSet),
+            type: type,
+            features: features
+        }));
     }
 
     return (
-        <div className={elementMenuStyle.elementSample} onClick={addComponent}>
+        <div className={elementMenuStyle.elementSample} onClick={handleClick}>
             <img src={imgSrc} alt=''></img>
             <div selectable="false">{text}</div>
         </div>
@@ -78,15 +83,10 @@ function ElementSample(props) {
 }
 
 function ElementMenu(props) {
-    // const {
-    //     onUpdateElementSet
-    // } = props;
-
     const templates = useRequestElementList();
 
     return (
         <div id={elementMenuStyle.elementMenu}>
-            {/* <ElementSample imgSrc={img_r} name='电阻' /> */}
             {templates.map((item, index) => {
                 return <ElementSample key={index} imgSrc={img_r} type={item.type} text={item.text} features={item.defaultFeatures} />
             })}
