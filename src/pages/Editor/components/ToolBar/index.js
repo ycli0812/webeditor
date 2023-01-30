@@ -18,6 +18,9 @@ import { setEditorStatus } from '../../slices/editorSlice';
 // Redux actions
 import { setModified } from '../../slices/editorSlice';
 
+// Antd components
+import { message } from 'antd';
+
 function ToolBar(props) {
     const dispatch = useDispatch();
 
@@ -25,16 +28,32 @@ function ToolBar(props) {
 
     const { filename } = useParams();
 
+    const [msg, contextHolder] = message.useMessage();
+
     function uploadCircuit(ev) {
         console.log('upload circuit');
+        message.open({
+            key: 'save',
+            type: 'loading',
+            content: '正在保存'
+        });
         saveDesign(filename, circuit).then((res) => {
             console.log(res);
-            alert('保存成功');
-            // global.setModified(false);
+            message.open({
+                key: 'save',
+                type: 'success',
+                content: '保存成功',
+                duration: 1
+            });
             dispatch(setModified(false));
         }).catch((res) => {
             console.log(res);
-            alert('保存失败');
+            message.open({
+                key: 'save',
+                type: 'error',
+                content: '保存失败',
+                duration: 1
+            });
         });
     }
 

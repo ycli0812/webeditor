@@ -16,7 +16,7 @@ import Pannel from './components/Pannel';
 import { getDesign } from '../../utils/Request';
 
 // Actions
-import { setCircuit } from './slices/editorSlice';
+import { setCircuit, setModified, clearSelect } from './slices/editorSlice';
 
 // Hooks
 function useRequestCircuit(filename) {
@@ -39,13 +39,19 @@ function useRequestCircuit(filename) {
 }
 
 function Editor(props) {
-    // 初始化，请求电路模型
     const navTo = useNavigate();
     const dispatch = useDispatch();
     const { filename } = useParams();
 
     useRequestCircuit(filename);
-    const { circuit } = useSelector(state => state.editor.circuit);
+
+    useEffect(() => {
+        return () => {
+            dispatch(setModified(false));
+            dispatch(setCircuit({}));
+            dispatch(clearSelect());
+        };
+    }, []);
 
     return (
         <div id={editorStyle.editor}>
