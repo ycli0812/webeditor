@@ -9,11 +9,14 @@ import navbarStyle from './Navbar.module.css';
 // Images
 import list from '../../assets/list.svg';
 
+// Utils
+import { saveDesign } from '../../utils/Request';
+
 // Redux actions
 import { setModified } from '../../pages/Editor/slices/editorSlice';
 
 // Antd components
-import { Button, Modal, Space } from 'antd';
+import { Button, Modal, Space, message } from 'antd';
 
 // Hooks
 function useConfirmQuitModal() {
@@ -23,15 +26,23 @@ function useConfirmQuitModal() {
 
     const navigateTo = useNavigate();
 
+    const {circuit} = useSelector(state => state.editor);
+    const filename = useLocation().pathname.split('/')[2];
+
     const handleSave = (ev) => {
         console.log('save');
         setLoading(true);
-        setTimeout(() => {
+        
+        saveDesign(filename, circuit).then((res) => {
             setLoading(false);
             setOpen(false);
             navigateTo('/');
-            console.log('loading over');
-        }, 3000);
+        }).catch((res) => {
+            console.error('Save design error:', res);
+            setLoading(false);
+            setOpen(false);
+            message.error('Save failed.');
+        });
     };
 
     const handleCancel = (ev) => {
@@ -72,15 +83,8 @@ function Navbar(props) {
     const dispatch = useDispatch();
     const navTo = useNavigate();
     // const { filename } = useParams();
-    const filename = useLocation().pathname.split('/')[2];;
+    const filename = useLocation().pathname.split('/')[2];
     const { modified } = useSelector(state => state.editor);
-
-    const [modal, contextHolder] = Modal.useModal();
-
-    const handleCancel = (close) => {
-        console.log(close);
-        close();
-    };
 
     const [quitConfirmModal, showQuitConfirmModal] = useConfirmQuitModal();
 
@@ -101,7 +105,6 @@ function Navbar(props) {
                 <span className={navbarStyle.fileName}>{filename === undefined ? '' : decodeURI(filename)}</span>
                 <span className={navbarStyle.fileName}>{modified ? '*' : ''}</span>
                 {quitConfirmModal}
-                {contextHolder}
             </div>
         </div>
     );

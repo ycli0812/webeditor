@@ -22,25 +22,6 @@ import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlic
 import { message, Modal } from 'antd';
 
 // Hooks
-function useRequestCircuit(filename) {
-    // const [circuit, setCircuit] = useState({});
-    const dispatch = useDispatch();
-    const navigateTo = useNavigate();
-    useEffect(() => {
-        getDesign(filename).then((res) => {
-            console.log('get file');
-            dispatch(setCircuit(res.data));
-        }).catch((res) => {
-            console.error('Request circuit error', res);
-            // dispatch(setCircuit({}));
-            alert('加载失败，点击确定返回首页。');
-            navigateTo(-1);
-        }).finally(() => {
-            
-        });
-    }, []);
-}
-
 function useRequestElementList() {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -100,6 +81,7 @@ function Editor(props) {
             });
         }).catch((res) => {
             console.error('Request circuit error', res);
+            msg.destroy();
             modal.error({
                 title: 'Error',
                 content: 'Can not load the file. May be a bad Internet connection.',
@@ -109,7 +91,7 @@ function Editor(props) {
                 },
                 keyboard: false
             });
-        }).finally(msg.destroy);
+        });
 
         return () => {
             dispatch(initEditor());

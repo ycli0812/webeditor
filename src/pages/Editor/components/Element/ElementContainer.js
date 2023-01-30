@@ -56,7 +56,7 @@ function ElementContainer(props) {
                 break;
             }
             case 'breadboard': {
-                const cols = getValue('columns', id);
+                const cols = getValue('column', id);
                 const holes = [];
                 const holeSize = zoom * 2;
                 for (let b = 0; b < 2; b++) {

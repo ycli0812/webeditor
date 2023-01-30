@@ -65,20 +65,13 @@ function Pannel(props) {
             info = (
                 <div>
                     <InputCell type='integer' title='列' value={features[0].value}
-                        onValueChange={(value) => { dispatch(setElementFeature({ id, name: 'columns', value })); }}>
+                        onValueChange={(value) => { dispatch(setElementFeature({ id, name: 'column', value })); }}>
                     </InputCell>
                 </div>
             );
             break;
         }
         case 'wire': {
-            // const [
-            //     { value: x1 } = { value: 0 },
-            //     { value: y1 } = { value: 0 },
-            //     { value: x2 } = { value: 0 },
-            //     { value: y2 } = { value: 0 },
-            //     { value: hexColor } = { value: '#000000' }
-            // ] = features;
             info = (
                 <div>
                     <InputCell type='color' title='颜色' value={getValue('color')}
