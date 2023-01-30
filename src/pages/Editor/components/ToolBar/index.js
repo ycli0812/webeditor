@@ -32,14 +32,14 @@ function ToolBar(props) {
 
     function uploadCircuit(ev) {
         console.log('upload circuit');
-        message.open({
+        msg.open({
             key: 'save',
             type: 'loading',
             content: '正在保存'
         });
         saveDesign(filename, circuit).then((res) => {
             console.log(res);
-            message.open({
+            msg.open({
                 key: 'save',
                 type: 'success',
                 content: '保存成功',
@@ -48,7 +48,7 @@ function ToolBar(props) {
             dispatch(setModified(false));
         }).catch((res) => {
             console.log(res);
-            message.open({
+            msg.open({
                 key: 'save',
                 type: 'error',
                 content: '保存失败',
@@ -76,6 +76,7 @@ function ToolBar(props) {
             <button className={toolbarStyle.toolbarBtn} onClick={changePointer}>
                 <img alt='' src={wire}></img>
             </button>
+            {contextHolder}
         </div>
     );
 }

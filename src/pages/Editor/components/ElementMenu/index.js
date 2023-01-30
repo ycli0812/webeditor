@@ -14,44 +14,6 @@ import img_r from '../../../../assets/elementIcon/resistor.svg';
 // Redux actions
 import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
 
-
-function useRequestElementList() {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        // TODO: send request
-        const temps = [
-            {
-                type: 'resistor',
-                text: '电阻',
-                defaultFeatures: [
-                    {
-                        name: 'resistance',
-                        value: 1,
-                        unit: 'om'
-                    },
-                    {
-                        name: 'tolerance',
-                        value: '1%'
-                    }
-                ]
-            },
-            {
-                type: 'breadboard',
-                text: '面包板',
-                defaultFeatures: [
-                    {
-                        name: 'column',
-                        value: 10
-                    }
-                ]
-            }
-        ];
-        dispatch(setElementTemplates(temps));
-    }, []);
-
-    // return templates;
-}
-
 function ElementSample(props) {
     const {
         type,
@@ -81,7 +43,7 @@ function ElementSample(props) {
 }
 
 function ElementMenu(props) {
-    useRequestElementList();
+    // useRequestElementList();
     const { elementTemplates: templates } = useSelector(state => state.editor);
 
     return (

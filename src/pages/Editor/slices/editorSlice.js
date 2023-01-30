@@ -18,6 +18,16 @@ const slice = createSlice({
     name: 'editor',
     initialState: initState,
     reducers: {
+        initEditor: {
+            reducer: (state) => {
+                state = initState;
+                return state;
+            },
+            prepare: () => {
+                return {};
+            }
+        },
+
         setEditorStatus: {
             reducer: (state, action) => {
                 const { status } = action.payload;
@@ -268,6 +278,7 @@ const slice = createSlice({
 });
 
 export const {
+    initEditor,
     setEditorStatus,
     setAnchorPoint,
     setTragetElement,

@@ -15,8 +15,11 @@ import Pannel from './components/Pannel';
 // Utils
 import { getDesign } from '../../utils/Request';
 
-// Actions
-import { setCircuit, setModified, clearSelect } from './slices/editorSlice';
+// Redux actions
+import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlice';
+
+// Antd components
+import { message, Modal } from 'antd';
 
 // Hooks
 function useRequestCircuit(filename) {
@@ -38,20 +41,82 @@ function useRequestCircuit(filename) {
     }, []);
 }
 
+function useRequestElementList() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        // TODO: send request
+        const temps = [
+            {
+                type: 'resistor',
+                text: '电阻',
+                defaultFeatures: [
+                    {
+                        name: 'resistance',
+                        value: 1,
+                        unit: 'om'
+                    },
+                    {
+                        name: 'tolerance',
+                        value: '1%'
+                    }
+                ]
+            },
+            {
+                type: 'breadboard',
+                text: '面包板',
+                defaultFeatures: [
+                    {
+                        name: 'column',
+                        value: 10
+                    }
+                ]
+            }
+        ];
+        dispatch(setElementTemplates(temps));
+    }, []);
+}
+
 function Editor(props) {
-    const navTo = useNavigate();
+    const navigateTo = useNavigate();
     const dispatch = useDispatch();
     const { filename } = useParams();
 
-    useRequestCircuit(filename);
-
+    const [msg, contextHolderMsg] = message.useMessage();
+    const [modal, contextHolderModal] = Modal.useModal();
     useEffect(() => {
+        dispatch(initEditor());
+        msg.open({
+            key: 'loadCircuit',
+            type: 'loading',
+            content: '加载中'
+        });
+        getDesign(filename).then((res) => {
+            dispatch(setCircuit(res.data));
+            msg.open({
+                key: 'loadCircuit',
+                type: 'success',
+                content: '加载完成',
+                duration: 2
+            });
+        }).catch((res) => {
+            console.error('Request circuit error', res);
+            modal.error({
+                title: 'Error',
+                content: 'Can not load the file. May be a bad Internet connection.',
+                onOk: (close) => {
+                    close();
+                    navigateTo(-1);
+                },
+                keyboard: false
+            });
+        }).finally(msg.destroy);
+
         return () => {
-            dispatch(setModified(false));
-            dispatch(setCircuit({}));
-            dispatch(clearSelect());
+            dispatch(initEditor());
         };
     }, []);
+
+    useRequestElementList();
 
     return (
         <div id={editorStyle.editor}>
@@ -69,6 +134,8 @@ function Editor(props) {
                 <Pannel />
                 {/* <div>status:{editorStatus}</div> */}
             </div>
+            {contextHolderMsg}
+            {contextHolderModal}
         </div>
     );
 }
