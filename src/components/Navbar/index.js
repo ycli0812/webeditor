@@ -9,7 +9,11 @@ import navbarStyle from './Navbar.module.css';
 // Images
 import list from '../../assets/list.svg';
 
+// Redux actions
+import { setModified } from '../../pages/Editor/slices/editorSlice';
+
 function Navbar(props) {
+    const dispatch = useDispatch();
     const navTo = useNavigate();
     // const { filename } = useParams();
     const filename = useLocation().pathname.split('/')[2];;
@@ -18,11 +22,10 @@ function Navbar(props) {
 
     function toLibrary(ev) {
         if (modified) {
-            // alert('请先保存');
-            let res = window.confirm('您还未保存，离开将丢失修改，确定要离开吗？');
-            if (res) {
+            if(window.confirm('您还未保存，离开将丢失修改，确定要离开吗？')) {
+                dispatch(setModified(false));
                 navTo('/');
-            } else { }
+            }
         } else {
             navTo('/');
         }
@@ -34,6 +37,7 @@ function Navbar(props) {
             <div className={navbarStyle.title}>
                 <span className={navbarStyle.folderName}>{filename === undefined ? '首页' : '我的设计'}/</span>
                 <span className={navbarStyle.fileName}>{filename === undefined ? '' : decodeURI(filename)}</span>
+                <span className={navbarStyle.fileName}>{modified ? '*' : ''}</span>
             </div>
         </div>
     );
