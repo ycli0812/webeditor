@@ -7,10 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import navbarStyle from './Navbar.module.css';
 
 // Images
-import list from '../../res/list.svg';
-
-// Context
-import { GlobalContext } from '../../utils/Context';
+import list from '../../assets/list.svg';
 
 function Navbar(props) {
     const navTo = useNavigate();
@@ -35,8 +32,8 @@ function Navbar(props) {
         <div className={navbarStyle.navbar}>
             <img alt='' src={list} draggable={false} onClick={toLibrary}></img>
             <div className={navbarStyle.title}>
-                <span className={navbarStyle.folderName}>{filename == undefined ? '首页' : '我的设计'}/</span>
-                <span className={navbarStyle.fileName}>{filename == undefined ? '' : decodeURI(filename)}</span>
+                <span className={navbarStyle.folderName}>{filename === undefined ? '首页' : '我的设计'}/</span>
+                <span className={navbarStyle.fileName}>{filename === undefined ? '' : decodeURI(filename)}</span>
             </div>
         </div>
     );

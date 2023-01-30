@@ -11,14 +11,14 @@ import Editor from './pages/Editor';
 import Library from './pages/Library';
 
 // Context
-import { GlobalContext } from './utils/Context';
+// import { GlobalContext } from './utils/Context';
 
 function App() {
-  const [modified, setModified] = useState(false);
+  // const [modified, setModified] = useState(false);
 
   return (
     <BrowserRouter>
-      <GlobalContext.Provider value={{ modified, setModified }}>
+      {/* <GlobalContext.Provider value={{ modified, setModified }}> */}
         <Provider store={store}>
           <div className="app">
             <Navbar />
@@ -28,7 +28,7 @@ function App() {
             </Routes>
           </div>
         </Provider>
-      </GlobalContext.Provider>
+      {/* </GlobalContext.Provider> */}
     </BrowserRouter>
   );
 }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import libraryStyle from './Library.module.css';
 
 // Images
-import blueprint from '../../res/blueprint.svg';
+import blueprint from '../../assets/blueprint.svg';
 
 // Utils
 import { getDesignList } from '../../utils/Request';

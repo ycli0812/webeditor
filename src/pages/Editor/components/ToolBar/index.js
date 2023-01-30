@@ -7,21 +7,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import toolbarStyle from './ToolBar.module.css';
 
 // Images
-import select from '../../../../res/select-cursor.svg';
-import wire from '../../../../res/icon_development_git-commit.svg';
-import upload from '../../../../res/upload.svg';
+import select from '../../../../assets/select-cursor.svg';
+import wire from '../../../../assets/icon_development_git-commit.svg';
+import upload from '../../../../assets/upload.svg';
 
 // Context
-import { GlobalContext, EditorContext } from '../../../../utils/Context';
+// import { GlobalContext, EditorContext } from '../../../../utils/Context';
 
 // Utils
 import { saveDesign } from '../../../../utils/Request';
+import { setEditorStatus } from '../../slices/editorSlice';
 
 function ToolBar(props) {
-    const editor = useContext(EditorContext);
-    const global = useContext(GlobalContext);
+    // const editor = useContext(EditorContext);
+    // const global = useContext(GlobalContext);
 
-    const { circuit } = useSelector(state => state.circuit);
+    const { circuit } = useSelector(state => state.editor);
 
     const { filename } = useParams();
     console.log(filename);
@@ -37,12 +38,16 @@ function ToolBar(props) {
         });
     }
 
+    const dispatch = useDispatch();
+
     function changePointer(ev) {
-        editor.toggleStatus('wiring');
+        // editor.toggleStatus('wiring');
+        dispatch(setEditorStatus('wiring'));
     }
 
     function normalPointer(ev) {
-        editor.toggleStatus('default');
+        // editor.toggleStatus('default');
+        dispatch(setEditorStatus('default'));
     }
 
     return (

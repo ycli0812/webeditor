@@ -2,29 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useDispatch, useSelector } from 'react-redux';
 
-// Context
-import { EditorContext } from '../../../../utils/Context';
-
 // Utils
 import computeColorRing from '../../../../utils/ColorRing';
 
 // Hooks
-// function useWireFeatures(features) {
-//     let x1, y1, x2, y2, hexColor;
-//     for(let i in features) {
-//         switch(features[i].name) {
-//             case 'x1': {
-//                 x1 = features[i].value;
-//                 break;
-//             }
-//             case 'x2': {}
-//             case 'y1': {}
-//             case 'y2': {}
-//             case 'color': {}
-//             default: break;
-//         }
-//     }
-// }
+import { useFeatureValueGetter, useFeatureUnitGetter } from '../../hooks/ElementFeatureSelector';
 
 function ElementContainer(props) {
     const {
@@ -35,12 +17,10 @@ function ElementContainer(props) {
         onMouseDown     // 按下时更新canvas中的初始偏移
     } = props;
 
-    // const editor = useContext(EditorContext);
     const dispatch = useDispatch();
-    const circuit = useSelector(state => state.circuit.circuit);
-    const status = useSelector(state => state.editor.status);
-    const targetElement = useSelector(state => state.editor.target);
-    const anchorPoint = useSelector(state => state.editor.anchorPoint);
+    const { circuit, status } = useSelector(state => state.editor);
+    const getValue = useFeatureValueGetter();
+    const getUnit = useFeatureUnitGetter();
 
     const gridSize = zoom * 5;
 
@@ -58,7 +38,7 @@ function ElementContainer(props) {
         const { x: pixelX, y: pixelY } = clientStatus[id].pixelPos;
         switch (type) {
             case 'resistor': {
-                const rings = computeColorRing(features[0].value, features[0].unit, features[1].value);
+                const rings = computeColorRing(getValue('resistance', id), getUnit('resistance', id), getValue('tolerance', id));
                 elementList.push(
                     <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)}>
                         <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />
@@ -76,7 +56,7 @@ function ElementContainer(props) {
                 break;
             }
             case 'breadboard': {
-                const cols = features[0].value;
+                const cols = getValue('columns', id);
                 const holes = [];
                 const holeSize = zoom * 2;
                 for (let b = 0; b < 2; b++) {
@@ -105,13 +85,7 @@ function ElementContainer(props) {
                 break;
             }
             case 'wire': {
-                const [
-                    { value: x1 } = { value: 0 },
-                    { value: y1 } = { value: 0 },
-                    { value: x2 } = { value: 0 },
-                    { value: y2 } = { value: 0 },
-                    { value: hexColor } = { value: '#000000' }
-                ] = features;
+                const x1 = getValue('x1', id), x2 = getValue('x2', id), y1 = getValue('y1', id), y2 = getValue('y2', id), hexColor = getValue('color', id);
                 elementList.push(
                     <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)}>
                         <line x1={x1 * gridSize} y1={y1 * gridSize} x2={x2 * gridSize} y2={y2 * gridSize} stroke={hexColor} strokeWidth={4}></line>

@@ -10,14 +10,9 @@ import { generateTypeId } from '../../../../utils/IdGenerator';
 
 // Components
 import ElementContainer from '../Element/ElementContainer';
-import WireContainer from '../Element/WireContainer';
-
-// Context
-import { EditorContext } from '../../../../utils/Context';
 
 // Redux actions
-import { addElement, addDraftElement, setElementInfo } from '../../actions/circuitActions';
-import { clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement } from '../../actions/editorEventActions';
+import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement } from '../../slices/editorSlice';
 
 function Canvas(props) {
     const {
@@ -40,18 +35,13 @@ function Canvas(props) {
     const [moved, setMoved] = useState(false);
 
     const dispatch = useDispatch();
-    const circuit = useSelector(state => state.circuit.circuit);
-    const status = useSelector(state => state.editor.status);
-    const targetElement = useSelector(state => state.editor.target);
-    const anchorPoint = useSelector(state => state.editor.anchorPoint);
+    const { circuit, status, target: targetElement, anchorPoint } = useSelector(state => state.editor);
 
     // 坐标系位置变化时执行
     useEffect(() => {
         refreashClient();
         refreashCanvas();
     }, [zoom, gridX, gridY, circuit]);
-
-    
 
     function refreashCanvas() {
         let cvs = document.getElementById(canvasStyle.realCanvas);
@@ -118,10 +108,6 @@ function Canvas(props) {
         // newSet[id].initOffsetX = x;
         // newSet[id].initOffsetY = y;
         setPixelPosList(newSet);
-        // editor.toggleStatus({
-        //     status: 'draggingComponent',
-        //     targetId: id
-        // });
         dispatch(setEditorStatus('draggingComponent'));
         dispatch(setTragetElement({ id }));
     }
@@ -134,10 +120,6 @@ function Canvas(props) {
         switch (status) {
             case 'default': {
                 // default状态下按下鼠标，进入拖拽模式
-                // editor.toggleStatus({
-                //     status: 'draggingCanvas'
-                // });
-                // redux:
                 dispatch(setEditorStatus('draggingCanvas'));
                 break;
             }
@@ -151,58 +133,23 @@ function Canvas(props) {
                     initOffset: { x: 0, y: 0 }
                 };
                 setPixelPosList(newPixelSet);
-                // 添加元件
-                // editor.addElement(editor.targetElementId, 'resistor', x, y, [
-                //     { name: 'resistace', value: 1, unit: 'om' },
-                //     { name: 'tolerance', value: '1%' }
-                // ]);
-                // console.log('to add:', editor.targetElementId, editor.targetFeature);
-                // editor.addElement(editor.targetElementId, editor.targetElementType, x, y, editor.targetFeature);
-                // 更新状态
-                // editor.toggleStatus({
-                //     status: 'default'
-                // });
                 // redux:
                 dispatch(addElement(targetElement.id, targetElement.type, { x, y }, targetElement.features));
                 dispatch(setEditorStatus('default'));
                 break;
             }
             case 'wiring': {
-                if (anchorPoint == null) {
-                    // editor.setAnchorPoint(findNearestGridPoint(offsetX, offsetY));
-                    console.log('set first point');
-                    // redux:
+                if (anchorPoint === null) {
                     dispatch(setAnchorPoint(findNearestGridPoint(offsetX, offsetY)));
                 } else {
                     const pCur = findNearestGridPoint(offsetX, offsetY);
-                    // editor.addLine(editor.anchorPoint, pCur);
-                    // editor.setAnchorPoint(null);
-                    // editor.toggleStatus({
-                    //     status: 'default'
-                    // });
-                    console.log('set second point');
                     // redux:
                     dispatch(addElement(generateTypeId('wire', circuit.elementSet), 'wire', pCur, [
-                        {
-                            name: 'x1',
-                            value: anchorPoint.x
-                        },
-                        {
-                            name: 'y1',
-                            value: anchorPoint.y
-                        },
-                        {
-                            name: 'x2',
-                            value: pCur.x
-                        },
-                        {
-                            name: 'y2',
-                            value: pCur.y
-                        },
-                        {
-                            name: 'color',
-                            value: '#000000'
-                        }
+                        { name: 'x1', value: anchorPoint.x },
+                        { name: 'y1', value: anchorPoint.y },
+                        { name: 'x2', value: pCur.x },
+                        { name: 'y2', value: pCur.y },
+                        { name: 'color', value: '#000000' }
                     ]));
                     dispatch(setAnchorPoint(null));
                     dispatch(setEditorStatus('default'));
@@ -261,35 +208,27 @@ function Canvas(props) {
                     selected: false
                 };
                 setPixelPosList(newPixelSet);
-                // 更新Context中的列表
-                // editor.setElementPos(targetId, x, y);
-                // 如果moved为假，说明是点击而不是拖动
-                // editor.setSelectedList([targetId]);
-                // 更新状态
-                // editor.toggleStatus({
-                //     status: 'default'
-                // });
                 dispatch(setElementInfo({ id: targetId, pos: { x, y } }));
-                console.log('targetId', targetId);
-                dispatch(selectElement(targetId));
+                if (!moved) {
+                    dispatch(clearSelect());
+                    dispatch(selectElement(targetId));
+                }
                 dispatch(setEditorStatus('default'));
                 break;
             }
             case 'draggingCanvas': {
                 // 更新状态
-                // editor.toggleStatus({
-                //     status: 'default'
-                // });
                 dispatch(setEditorStatus('default'));
                 // 如果按下后没有移动，清除所有选中
                 if (!moved) {
-                    // editor.setSelectedList([]);
                     dispatch(clearSelect());
                 }
                 break;
             }
             default: break;
+
         }
+        setMoved(false);
     }
 
     function handleMouseWheel(ev) {

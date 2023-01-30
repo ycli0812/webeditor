@@ -6,22 +6,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import elementMenuStyle from './ElementMenu.module.css';
 
 // Utils
-
-// Context
-import { EditorContext } from '../../../../utils/Context';
-
-//Images
-import img_r from '../../../../res/elementIcon/resistor.svg';
-
-// Redux actions
-import { setEditorStatus, setTragetElement } from '../../actions/editorEventActions';
 import { generateTypeId } from '../../../../utils/IdGenerator';
 
+//Images
+import img_r from '../../../../assets/elementIcon/resistor.svg';
+
+// Redux actions
+import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
+
+
 function useRequestElementList() {
-    const [templates, setTemplates] = useState([]);
+    const dispatch = useDispatch();
     useEffect(() => {
         // TODO: send request
-        setTemplates([
+        const temps = [
             {
                 type: 'resistor',
                 text: '电阻',
@@ -47,10 +45,11 @@ function useRequestElementList() {
                     }
                 ]
             }
-        ]);
+        ];
+        dispatch(setElementTemplates(temps));
     }, []);
 
-    return templates;
+    // return templates;
 }
 
 function ElementSample(props) {
@@ -61,9 +60,8 @@ function ElementSample(props) {
         features,
     } = props;
 
-    // const editor = useContext(EditorContext);
     const dispatch = useDispatch();
-    const { elementSet } = useSelector(state => state.circuit.circuit);
+    const { elementSet } = useSelector(state => state.editor.circuit);
 
     function handleClick() {
         dispatch(setEditorStatus('adding'));
@@ -83,7 +81,8 @@ function ElementSample(props) {
 }
 
 function ElementMenu(props) {
-    const templates = useRequestElementList();
+    useRequestElementList();
+    const { elementTemplates: templates } = useSelector(state => state.editor);
 
     return (
         <div id={elementMenuStyle.elementMenu}>

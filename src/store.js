@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import circuitReducer from './pages/Editor/reducers/circuitReducer';
-import editorEventReducer from './pages/Editor/reducers/editorEventReducer';
+// import circuitReducer from './pages/Editor/reducers/circuitReducer';
+import editorSlice from './pages/Editor/slices/editorSlice';
 
 export const store = configureStore({
     reducer: {
-        editor: editorEventReducer,
-        circuit: circuitReducer
+        editor: editorSlice
+        // circuit: circuitReducer
     }
 });

@@ -6,52 +6,29 @@ import { useSelector, useDispatch } from 'react-redux';
 import panelStyle from './Panel.module.css';
 
 // Context
-import { EditorContext } from '../../../../utils/Context';
+// import { EditorContext } from '../../../../utils/Context';
 
 // Components
 import InputCell from '../../../../components/InputCell/InputCell';
 
-// Actions
-import { addElement, removeElement, setElementFeature } from '../../actions/circuitActions';
-import { clearSelect } from '../../actions/editorEventActions';
+// Redux actions
+// import { addElement, removeElement, setElementFeature } from '../../actions/circuitActions';
+// import { clearSelect } from '../../actions/editorEventActions';
+import { addElement, removeElement, setElementFeature, clearSelect } from '../../slices/editorSlice';
 
 // Hooks
-function useFeatureValueGetter(id) {
-    const { elementSet } = useSelector(state => state.circuit.circuit);
-    return (name) => {
-        const { features } = elementSet[id];
-        for (let i in features) {
-            if (features[i].name == name) {
-                return features[i].value;
-            }
-        }
-    };
-}
-
-function useFeatureUnitGetter(id) {
-    const { elementSet } = useSelector(state => state.circuit.circuit);
-    return (name) => {
-        const { features } = elementSet[id];
-        for (let i in features) {
-            if (features[i].name == name) {
-                return features[i].unit;
-            }
-        }
-    };
-}
+import { useFeatureValueGetter, useFeatureUnitGetter } from '../../hooks/ElementFeatureSelector';
 
 function Pannel(props) {
-    const editor = useContext(EditorContext);
+    // const editor = useContext(EditorContext);
     // 从store中取出target元件id
     const dispatch = useDispatch();
 
     let info;
 
-    // const id = useSelector(state => state.editor.target.id);
-    const selectedList = useSelector(state => state.editor.selectedList);
+    const { selectedList, circuit } = useSelector(state => state.editor);
     const id = selectedList[0];
     // console.log('selected id:', selectedList);
-    const circuit = useSelector(state => state.circuit.circuit);
     const getValue = useFeatureValueGetter(id);
     const getUnit = useFeatureUnitGetter(id);
     // console.log('test getFeature:', getFeature('resistance'));
