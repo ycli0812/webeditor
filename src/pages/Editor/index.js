@@ -51,6 +51,17 @@ function useRequestElementList() {
                         value: 10
                     }
                 ]
+            },
+            {
+                type: 'capacitor',
+                text: '电容器',
+                defaultFeatures: [
+                    {
+                        name: 'capacity',
+                        value: 1,
+                        unit: 'f'
+                    }
+                ]
             }
         ];
         dispatch(setElementTemplates(temps));

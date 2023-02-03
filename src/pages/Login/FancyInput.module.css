@@ -1,0 +1,100 @@
+@value focusedColor #1F66FF;
+@value bluredColor #AAAAAA;
+
+.containerBlured {
+    border-radius: 5px;
+    border: 1px solid bluredColor;
+    position: relative;
+    padding: 10px 5px;
+}
+
+.containerFocused {
+    border-radius: 5px;
+    border: 2px solid focusedColor;
+    position: relative;
+    padding: 10px 5px;
+}
+
+.container input {
+    font-size: 18px;
+    line-height: 22px;
+}
+
+@value blurFont 14px;
+@value focusedFont 12px;
+
+.placeholderBlured {
+    animation: blur 0.1s;
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    font-size: blurFont;
+    line-height: 22px;
+    transform: translateY(-50%);
+    color: bluredColor;
+    padding: 0 3px;
+    pointer-events: none;
+}
+
+.placeholderFocused {
+    animation: focus 0.1s;
+    position: absolute;
+    top: 0;
+    transform: translateY(-50%);
+    left: 10px;
+    font-size: focusedFont;
+    line-height: 16px;
+    color: focusedColor;
+    background-color: #FFFFFF;
+    padding: 0 3px;
+}
+
+@keyframes focus {
+    from {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        font-size: blurFont;
+        line-height: 22px;
+        transform: translateY(-50%);
+        color: bluredColor;
+        padding: 0 3px;
+    }
+
+    to {
+        position: absolute;
+        top: 0;
+        transform: translateY(-50%);
+        left: 10px;
+        font-size: focusedFont;
+        line-height: 16px;
+        color: focusedColor;
+        background-color: #FFFFFF;
+        padding: 0 3px;
+    }
+}
+
+@keyframes blur {
+    from {
+        position: absolute;
+        top: 0;
+        transform: translateY(-50%);
+        left: 10px;
+        font-size: focusedFont;
+        line-height: 16px;
+        color: focusedColor;
+        background-color: #FFFFFF;
+        padding: 0 3px;
+    }
+
+    to {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        font-size: blurFont;
+        line-height: 22px;
+        transform: translateY(-50%);
+        color: bluredColor;
+        padding: 0 3px;
+    }
+}

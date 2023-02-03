@@ -11,6 +11,13 @@ import blueprint from '../../assets/blueprint.svg';
 // Utils
 import { getDesignList } from '../../utils/Request';
 
+// Antd components
+import { PlusOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+
+// Hooks
+import { useCreateDesignModel } from './hooks/showCreatModal';
+
 function ListItem(props) {
     const {
         fileName,
@@ -32,6 +39,8 @@ function Library(props) {
 
     const [designList, setDesignList] = useState([]);
 
+    const [modal, showModal] = useCreateDesignModel();
+
     // 向服务器请求
     useEffect(() => {
         getDesignList().then((res) => {
@@ -47,18 +56,28 @@ function Library(props) {
 
     const designs = designList.map((item, index) => {
         return (
-            <ListItem key={index} fileName={item.filename} editTime={item.editTime} onClick={() => {navigate('/editor/' + item.filename)}} />
+            <ListItem key={index} fileName={item.filename} editTime={item.editTime} onClick={() => { navigate('/editor/' + item.filename) }} />
         );
     });
 
+    function addDesign(ev) {
+        showModal();
+    }
+
     return (
         <div className={libraryStyle.library}>
-            <div className={libraryStyle.title}>
-                <div className={libraryStyle.titleText}>我的设计</div>
+            <div>
+                <div className={libraryStyle.title}>
+                    <div className={libraryStyle.titleText}>我的设计</div>
+                    <Button shape='round' icon={<PlusOutlined />} type='dashed' onClick={addDesign}>
+                        New File
+                    </Button>
+                </div>
+                <div className={libraryStyle.designList}>
+                    {designs}
+                </div>
             </div>
-            <div className={libraryStyle.designList}>
-                {designs}
-            </div>
+            {modal}
         </div>
     );
 }

@@ -37,6 +37,22 @@ function ElementContainer(props) {
         if (!clientStatus[id]) continue;
         const { x: pixelX, y: pixelY } = clientStatus[id].pixelPos;
         switch (type) {
+            case 'capacitor': {
+                elementList.push(
+                    <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} stroke="null" id="Layer_1" transform={`translate(${pixelX}, ${pixelY-gridSize/2}) scale(${gridSize*1/50})`}>
+                        <title stroke="null">Layer 1</title>
+                        <line stroke="#000" stroke-width="3" id="svg_1" y2="25" x2="50.0692" y1="25" x1="0" fill="none" />
+                        <ellipse stroke="#000" ry="23" rx="23" id="svg_2" cy="25" cx="25"
+                            stroke-width="0" fill="#222222" />
+                        <ellipse stroke="#000" ry="18" rx="18" id="svg_3" cy="24.9308" cx="25" stroke-width="0" fill="#BBBBBB" />
+                        <line transform="rotate(-45 24.9654 25.0346)" stroke="#666666" id="svg_6" y2="25.0346" x2="43" y1="25.0346"
+                            x1="7" fill="#BBBBBB" />
+                        <line transform="rotate(45 24.9654 25.0346)" stroke="#666666" id="svg_7" y2="25.0346" x2="43" y1="25.0346"
+                            x1="7" fill="#BBBBBB" />
+                    </g>
+                );
+                break;
+            }
             case 'resistor': {
                 const rings = computeColorRing(getValue('resistance', id), getUnit('resistance', id), getValue('tolerance', id));
                 elementList.push(
