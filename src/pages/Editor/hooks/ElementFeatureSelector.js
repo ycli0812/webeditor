@@ -55,4 +55,23 @@ const useFeatureUnitGetter = (id) => {
     };
 };
 
-export { useFeatureValueGetter, useFeatureUnitGetter };
+const usePinPositionGetter = (id) => {
+    const { elementSet } = useSelector(state => state.editor.circuit);
+    return (name, _id) => {
+        const usedId = _id === undefined ? id : _id;
+        if(!(usedId in elementSet)) {
+            return;
+        }
+        const { pins } = elementSet[usedId];
+        for (let i in pins) {
+            if (pins[i].name == name) {
+                return {
+                    x: pins[i].x,
+                    y: pins[i].y
+                };
+            }
+        }
+    };
+};
+
+export { useFeatureValueGetter, useFeatureUnitGetter, usePinPositionGetter };

@@ -1,0 +1,17 @@
+<svg height="100" width="400" xmlns="http://www.w3.org/2000/svg" role="img">
+    <style>
+        .fill-test {
+            fill: #FF0000;
+        }
+    </style>
+    <rect x="0" y="0" height="100" width="400" fill="#FFFFFF"/>
+    <g>
+        <rect x="0" y="48" height="4" width="250" />
+        <path d="M 50,20 C -10,0,-10,100,50,80 L 200,80 C 260,100,260,0,200,20 Z" fill="#19a1d6" />
+        <rect x="50" y="20" height="60" width="15" />
+        <rect x="110" y="20" height="60" width="15" />
+        <rect x="135" y="20" height="60" width="15" />
+        <rect x="160" y="20" height="60" width="15" />
+        <rect x="185" y="20" height="60" width="15" />
+    </g>
+</svg>

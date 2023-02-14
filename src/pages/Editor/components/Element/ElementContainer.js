@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import computeColorRing from '../../../../utils/ColorRing';
 
 // Hooks
-import { useFeatureValueGetter, useFeatureUnitGetter } from '../../hooks/ElementFeatureSelector';
+import { useFeatureValueGetter, useFeatureUnitGetter, usePinPositionGetter } from '../../hooks/ElementFeatureSelector';
 
 function ElementContainer(props) {
     const {
@@ -21,6 +21,7 @@ function ElementContainer(props) {
     const { circuit, status } = useSelector(state => state.editor);
     const getValue = useFeatureValueGetter();
     const getUnit = useFeatureUnitGetter();
+    const getPinPos = usePinPositionGetter();
 
     const gridSize = zoom * 5;
 
@@ -39,7 +40,7 @@ function ElementContainer(props) {
         switch (type) {
             case 'capacitor': {
                 elementList.push(
-                    <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} stroke="null" id="Layer_1" transform={`translate(${pixelX}, ${pixelY-gridSize/2}) scale(${gridSize*1/50})`}>
+                    <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} stroke="null" id="Layer_1" transform={`translate(${pixelX}, ${pixelY - gridSize / 2}) scale(${gridSize * 1 / 50})`}>
                         <title stroke="null">Layer 1</title>
                         <line stroke="#000" stroke-width="3" id="svg_1" y2="25" x2="50.0692" y1="25" x1="0" fill="none" />
                         <ellipse stroke="#000" ry="23" rx="23" id="svg_2" cy="25" cx="25"
@@ -55,9 +56,12 @@ function ElementContainer(props) {
             }
             case 'resistor': {
                 const rings = computeColorRing(getValue('resistance', id), getUnit('resistance', id), getValue('tolerance', id));
+                const { x: x1, y: y1 } = getPinPos('start', id);
+                const { x: x2, y: y2 } = getPinPos('end', id);
+                // console.log(`(${x1},${y1}),(${x2},${y2})`);
                 elementList.push(
-                    <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)}>
-                        <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />
+                    <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} transform={`translate(${pixelX}, ${pixelY - gridSize / 5}) scale(${gridSize / 250})`}>
+                        {/* <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />
                         <rect id='wire-right' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX + 3 * gridSize} strokeWidth='0'
                             stroke='#000' fill='#000000' />
                         <rect id='wire-left' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX} strokeWidth='0'
@@ -66,7 +70,17 @@ function ElementContainer(props) {
                         <rect id='ring2' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.5} fill={rings[1]} />
                         <rect id='ring3' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.8} fill={rings[2]} />
                         <rect id='ring4' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 1.1} fill={rings[3]} />
-                        <rect id='ring5' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize * 3 - gridSize * 0.4} fill={rings[4]} />
+                        <rect id='ring5' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize * 3 - gridSize * 0.4} fill={rings[4]} /> */}
+                        <rect x="0" y="46" height="8" width={250 * Math.abs(x2 - x1)} fill="#CCCCCC" />
+                        <g transform={`translate(${250 * Math.abs(x2 - x1) / 2 - 125},0)`}>
+                            <path d="M 50,20 C -10,0,-10,100,50,80 L 200,80 C 260,100,260,0,200,20 Z" fill="#19a1d6" />
+                            <rect x="50" y="20" height="60" width="15" fill={rings[0]} />
+                            <rect x="110" y="20" height="60" width="15" fill={rings[1]} />
+                            <rect x="135" y="20" height="60" width="15" fill={rings[2]} />
+                            <rect x="160" y="20" height="60" width="15" fill={rings[3]} />
+                            <rect x="185" y="20" height="60" width="15" fill={rings[4]} />
+                        </g>
+
                     </g>
                 );
                 break;
@@ -94,7 +108,7 @@ function ElementContainer(props) {
                         }
                     }
                 }
-                if(extended) {
+                if (extended) {
                     for (let m = 0; m < 2; m++) {
                         for (let n = 0; n < cols; n++) {
                             sides.push(
