@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 // import { store } from './app/store';
 // import { Provider } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -24,8 +24,8 @@ function App() {
           {logined ? <Navbar /> : null}
           <Routes>
             <Route path='/editor/:filename' element={<Editor />}></Route>
-            <Route path='/' element={<Library />}></Route>
-            <Route path='/login' element={<Login />}></Route>
+            <Route path='/library' element={<Library />}></Route>
+            <Route path='/' element={<Login />}></Route>
           </Routes>
         </div>
       {/* </Provider> */}

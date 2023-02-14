@@ -25,6 +25,14 @@ function useSlot(slotName, children) {
     return null;
 }
 
+function findDefaultIndex(options, value) {
+    let i;
+    for (i = 0; i < options.length; i++) {
+        if (value === options[i].name) return i;
+    }
+    return 0;
+}
+
 function InputCell(props) {
     const {
         title = '',                     // 标题
@@ -43,6 +51,7 @@ function InputCell(props) {
     } = props;
 
     const [isEditing, setIsEditing] = useState(false);
+    const [redioActiveIndex, setRadioActiveIndex] = useState(findDefaultIndex(valueOptions, value));
     // const [valueRestore, setValueRestore] = useState(value);
 
     function handleInputBlur(ev) {
@@ -106,8 +115,16 @@ function InputCell(props) {
         // setValueRestore(targetValue);
     }
 
+    function handleRadioClick(index) {
+        setRadioActiveIndex(index);
+        onValueChange(valueOptions[index].name);
+    }
+
     // icon插槽，左侧区域
     let icon = useSlot('icon', children);
+
+    // content插槽，中间区域
+    let content = useSlot('content', children);
 
     // 中间部分，编辑区
     let contentEditor;
@@ -122,7 +139,22 @@ function InputCell(props) {
             );
             break;
         }
+        case 'radio': {
+            contentEditor = (
+                <div className={inputCellStyle.radioOptions} style={{ gridTemplateColumns: `repeat(${valueOptions.length}, auto)` }}>
+                    <div className={inputCellStyle.radioSelecotr} style={{ width: `calc(100% / ${valueOptions.length} - 2px)`, left: `calc(100% / ${valueOptions.length} * ${redioActiveIndex})` }}></div>
+                    {valueOptions.map((item, index) => {
+                        return (<span key={index} className={inputCellStyle.radioOption} value={item.name} onClick={(ev) => { handleRadioClick(index); }}>{item.value}</span>);
+                    })}
+                </div>
+            );
+            break;
+        }
         default: {
+            if (content != null) {
+                contentEditor = content;
+                break;
+            }
             if (isEditing || !blurFix) {
                 contentEditor = (
                     <input className={inputCellStyle.input} type='text' onBlur={handleInputBlur} defaultValue={value} autoFocus />
@@ -153,7 +185,7 @@ function InputCell(props) {
     let columns = [];
     if (icon != null) columns.push('20px');
     columns.push('auto');
-    if (unitEditor != null) columns.push('50px');
+    if (unitEditor != null) columns.push('60px');
 
     return (
         <div>

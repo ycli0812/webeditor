@@ -32,4 +32,15 @@ function saveDesign(filename, circuit) {
     return resp;
 }
 
-export { getDesignList, getDesign, saveDesign };
+function newDesign(filename) {
+    const resp = axios({
+        method: 'post',
+        url: '/create',
+        data: {
+            file: filename
+        }
+    });
+    return resp;
+}
+
+export { getDesignList, getDesign, saveDesign, newDesign };

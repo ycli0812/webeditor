@@ -67,10 +67,15 @@ function Login(props) {
             duration: 2
         });
         dispatch(login(true));
-        nav('/');
+        nav('/library');
     };
 
-    const handleRegister = (ev) => { };
+    const handleRegister = (ev) => {
+        message.error({
+            content: 'No registration page now.',
+            duration: 2
+        });
+    };
 
     return (
         <div className={loginStyle.login}>
@@ -78,14 +83,16 @@ function Login(props) {
                 {/* <img alt='' src={login_bg}></img> */}
             </div>
             <section id={loginStyle.loginCard}>
-                <h2>Please Login Your Account</h2>
-                <Space direction='vertical' size={10} style={{ display: 'flex' }}>
+                <Space align='center'>
+                    <h2>Login Your Account</h2>
+                </Space>
+                <Space direction='vertical' size={20} style={{ display: 'flex' }}>
                     <FancyInput placeholder='Account' type='text' />
                     <FancyInput placeholder='Password' type='password' />
                 </Space>
                 <Space direction='horizontal' align='end' style={{ marginLeft: 'auto' }}>
                     <Button type='primary' size='large' shape='round' onClick={handleLogin}>Login</Button>
-                    <Button type='link' size='large'>Register</Button>
+                    <Button type='link' size='large' onClick={handleRegister}>Register</Button>
                 </Space>
             </section>
         </div>

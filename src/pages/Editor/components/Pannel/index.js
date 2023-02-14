@@ -19,6 +19,9 @@ import { addElement, removeElement, setElementFeature, clearSelect } from '../..
 // Hooks
 import { useFeatureValueGetter, useFeatureUnitGetter } from '../../hooks/ElementFeatureSelector';
 
+// Antd components
+import { Radio } from 'antd';
+
 function Pannel(props) {
     // const editor = useContext(EditorContext);
     // 从store中取出target元件id
@@ -67,6 +70,10 @@ function Pannel(props) {
                     <InputCell type='integer' title='列' value={features[0].value}
                         onValueChange={(value) => { dispatch(setElementFeature({ id, name: 'column', value })); }}>
                     </InputCell>
+                    <InputCell type='radio' title='扩展' value={getValue('extended', id)}
+                        valueOptions={[{ name: true, value: '打开' }, { name: false, value: '关闭' }]}
+                        onValueChange={(value) => { dispatch(setElementFeature({ id, name: 'extended', value })); }}>
+                    </InputCell>
                 </div>
             );
             break;
@@ -76,7 +83,7 @@ function Pannel(props) {
                 <div>
                     <InputCell type='color' title='颜色' value={getValue('color')}
                         onValueChange={(value) => { dispatch(setElementFeature({ id, name: 'color', value })); }}>
-                        <div slot='icon' style={{ backgroundColor: getValue('color'), height: '16px', width: '16px', borderRadius: '50%' }}></div>
+                        <div slot='icon' style={{ backgroundColor: getValue('color'), height: '16px', width: '16px', borderRadius: '50%', marginLeft: '10px' }}></div>
                     </InputCell>
                 </div>
             );

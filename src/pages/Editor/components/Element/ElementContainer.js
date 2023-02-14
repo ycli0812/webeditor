@@ -73,7 +73,9 @@ function ElementContainer(props) {
             }
             case 'breadboard': {
                 const cols = getValue('column', id);
+                const extended = getValue('extended', id);
                 const holes = [];
+                const sides = [];
                 const holeSize = zoom * 2;
                 for (let b = 0; b < 2; b++) {
                     for (let m = 0; m < 5; m++) {
@@ -92,10 +94,45 @@ function ElementContainer(props) {
                         }
                     }
                 }
+                if(extended) {
+                    for (let m = 0; m < 2; m++) {
+                        for (let n = 0; n < cols; n++) {
+                            sides.push(
+                                <rect
+                                    key={m * cols + n}
+                                    id={'svg_' + m * n}
+                                    height={holeSize}
+                                    width={holeSize}
+                                    y={pixelY + gridSize * 13 - holeSize / 2 + m * gridSize}
+                                    x={pixelX + gridSize - holeSize / 2 + n * gridSize}
+                                    stroke='#000'
+                                    fill='#777777' />
+                            );
+                        }
+                    }
+                    for (let m = 0; m < 2; m++) {
+                        for (let n = 0; n < cols; n++) {
+                            sides.push(
+                                <rect
+                                    key={m * cols + n + cols * 2}
+                                    id={'svg_' + m * n}
+                                    height={holeSize}
+                                    width={holeSize}
+                                    y={pixelY - gridSize * 2 - holeSize / 2 + m * gridSize}
+                                    x={pixelX + gridSize - holeSize / 2 + n * gridSize}
+                                    stroke='#000'
+                                    fill='#777777' />
+                            );
+                        }
+                    }
+                }
                 breadboards.push(
                     <g onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} key={id}>
                         <rect id='svg_1' x={pixelX} y={pixelY} height={12 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' />
+                        {extended ? <rect x={pixelX} y={pixelY - 3 * gridSize} height={3 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' /> : null}
+                        {extended ? <rect x={pixelX} y={pixelY + 12 * gridSize} height={3 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' /> : null}
                         {holes}
+                        {sides}
                     </g>
                 );
                 break;

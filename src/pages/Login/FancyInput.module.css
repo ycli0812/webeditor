@@ -10,7 +10,7 @@
 
 .containerFocused {
     border-radius: 5px;
-    border: 2px solid focusedColor;
+    border: 1px solid focusedColor;
     position: relative;
     padding: 10px 5px;
 }

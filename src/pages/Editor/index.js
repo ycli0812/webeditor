@@ -30,6 +30,18 @@ function useRequestElementList() {
             {
                 type: 'resistor',
                 text: '电阻',
+                pins: [
+                    {
+                        name: 'start',
+                        x: 0,
+                        y: 0
+                    },
+                    {
+                        name: 'end',
+                        x: 0,
+                        y: 0
+                    }
+                ],
                 defaultFeatures: [
                     {
                         name: 'resistance',
@@ -45,10 +57,15 @@ function useRequestElementList() {
             {
                 type: 'breadboard',
                 text: '面包板',
+                pins: [],
                 defaultFeatures: [
                     {
                         name: 'column',
                         value: 10
+                    },
+                    {
+                        name: 'extended',
+                        value: false
                     }
                 ]
             },
@@ -60,6 +77,33 @@ function useRequestElementList() {
                         name: 'capacity',
                         value: 1,
                         unit: 'f'
+                    }
+                ]
+            },
+            {
+                type: 'wire',
+                text: '导线',
+                pins: [],
+                defaultFeatures: [
+                    {
+                        name: 'x1',
+                        value: 0
+                    },
+                    {
+                        name: 'x2',
+                        value: 0
+                    },
+                    {
+                        name: 'y1',
+                        value: 0
+                    },
+                    {
+                        name: 'y2',
+                        value: 0
+                    },
+                    {
+                        name: 'color',
+                        value: '#000000'
                     }
                 ]
             }

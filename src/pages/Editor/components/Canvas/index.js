@@ -13,6 +13,11 @@ import ElementContainer from '../Element/ElementContainer';
 
 // Redux actions
 import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement } from '../../slices/editorSlice';
+import { zoomIn, zoomOut, setGridCenter } from '../../slices/editorSlice';
+
+// Hooks
+// import useElementAdder from '../../hooks/ElementAdder';
+import useElementAdder from '../../hooks/ElementAdder';
 
 function Canvas(props) {
     const {
@@ -24,11 +29,12 @@ function Canvas(props) {
     // const editor = useContext(EditorContext);
 
     // 放大系数，最小4，最大20，grid = zoom * 5
-    const [zoom, setZoom] = useState(5);
+    // const [zoom, setZoom] = useState(5);
+    const { zoom, gridX, gridY } = useSelector(state => state.editor);
     const gridSize = zoom * 5;
     // grid坐标系原点相对Canvas的偏移
-    const [gridX, setGridX] = useState(250);
-    const [gridY, setGridY] = useState(250);
+    // const [gridX, setGridX] = useState(250);
+    // const [gridY, setGridY] = useState(250);
     // 维护每个元件的像素位置（Editor全局的元件列表只存储grid坐标）供拖动时改变，拖动完成时才会更新grid坐标
     const [piexelPosList, setPixelPosList] = useState({});
     // 记录最近一次鼠标按下后是否移动
@@ -36,6 +42,11 @@ function Canvas(props) {
 
     const dispatch = useDispatch();
     const { circuit, status, target: targetElement, anchorPoint } = useSelector(state => state.editor);
+
+    // Elements adder
+    // const add = useElementAdder();
+    const addResistor = useElementAdder('resistor');
+    const addWire = useElementAdder('wire');
 
     // 坐标系位置变化时执行
     useEffect(() => {
@@ -117,6 +128,7 @@ function Canvas(props) {
         ev.stopPropagation();
         setMoved(false);
         let { offsetX, offsetY } = ev.nativeEvent;
+        console.log(ev);
         switch (status) {
             case 'default': {
                 // default状态下按下鼠标，进入拖拽模式
@@ -124,36 +136,14 @@ function Canvas(props) {
                 break;
             }
             case 'adding': {
-                // 计算位置
+                // // 计算位置
                 const { x, y } = findNearestGridPoint(offsetX, offsetY);
-                // 更新像素坐标   
-                let newPixelSet = { ...piexelPosList };
-                newPixelSet[targetElement.id] = {
-                    pixelPos: { x: x * gridSize, y: y * gridSize },
-                    initOffset: { x: 0, y: 0 }
-                };
-                setPixelPosList(newPixelSet);
-                // redux:
-                dispatch(addElement(targetElement.id, targetElement.type, { x, y }, targetElement.features));
-                dispatch(setEditorStatus('default'));
+                if(addResistor(x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
             case 'wiring': {
-                if (anchorPoint === null) {
-                    dispatch(setAnchorPoint(findNearestGridPoint(offsetX, offsetY)));
-                } else {
-                    const pCur = findNearestGridPoint(offsetX, offsetY);
-                    // redux:
-                    dispatch(addElement(generateTypeId('wire', circuit.elementSet), 'wire', pCur, [
-                        { name: 'x1', value: anchorPoint.x },
-                        { name: 'y1', value: anchorPoint.y },
-                        { name: 'x2', value: pCur.x },
-                        { name: 'y2', value: pCur.y },
-                        { name: 'color', value: '#000000' }
-                    ]));
-                    dispatch(setAnchorPoint(null));
-                    dispatch(setEditorStatus('default'));
-                }
+                const {x, y} = findNearestGridPoint(offsetX, offsetY);
+                if(addWire(x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
             default: break;
@@ -166,8 +156,9 @@ function Canvas(props) {
         const { offsetX, offsetY } = ev.nativeEvent;
         switch (status) {
             case 'draggingCanvas': {
-                setGridX(gridX + movementX);
-                setGridY(gridY + movementY);
+                // setGridX(gridX + movementX);
+                // setGridY(gridY + movementY);
+                dispatch(setGridCenter(gridX + movementX, gridY + movementY));
                 setMoved(true);
                 break;
             }
@@ -180,12 +171,6 @@ function Canvas(props) {
                 };
                 setPixelPosList(updated);
                 setMoved(true);
-                break;
-            }
-            case 'wiring': {
-                break;
-            }
-            case 'adding': {
                 break;
             }
             default: break;
@@ -232,15 +217,12 @@ function Canvas(props) {
     }
 
     function handleMouseWheel(ev) {
-        let offsetX = ev.nativeEvent.offsetX, offsetY = ev.nativeEvent.offsetY;
-        let deltaY = ev.deltaY;
-        let curZoom = zoom;
+        const { deltaY } = ev;
         if (deltaY < 0) {
-            curZoom = curZoom + 1 > 20 ? 20 : curZoom + 1;
+            dispatch(zoomIn());
         } else {
-            curZoom = curZoom - 1 < 4 ? 4 : curZoom - 1;
+            dispatch(zoomOut());
         }
-        setZoom(curZoom);
     }
 
     return (

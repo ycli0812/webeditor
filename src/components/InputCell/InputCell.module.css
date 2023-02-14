@@ -1,27 +1,27 @@
+/* title */
 .subtitle {
     font-size: 12px;
     margin: 0 0 2px 5px;
     color: #777777;
 }
 
+/* content container */
 .fetureInput {
+    height: 32px;
     min-height: 24px;
     max-height: 40px;
-    width: 160px;
+    width: auto;
     font-size: 14px;
     line-height: 20px;
-    padding: 5px 10px;
     border-radius: 5px;
-    /* background-color: #EEEEEE; */
     display: grid;
-    /* grid-template-columns: 20px auto 50px; */
     column-gap: 5px;
     margin-bottom: 10px;
     align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* padding: 3px; */
 }
 
+/* select */
 .fetureInput select {
     outline: none;
     border: none;
@@ -29,18 +29,18 @@
     font-size: 14px;
     line-height: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 5px 10px;
 }
 
+/* input */
 .fetureInput input {
-    width: 100%;
+    width: calc(100% - 20px);
     outline: none;
-    /* outline-width: 1px; */
-    /* padding: 5px; */
+    margin: 5px 10px;
     border-bottom: 1px solid #000000;
     border-top: none;
     border-left: none;
     border-right: none;
-    /* border: none; */
     background-color: transparent;
     font-size: 14px;
     line-height: 20px;
@@ -48,16 +48,41 @@
 }
 
 .value {
-    font-size: 14px;
-    line-height: 20px;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+    padding: 5px 10px;
 }
 
+/* icon */
 .icon {
     height: 16px;
 }
 
 .icon img {
     height: 100%;
+}
+
+/* radio */
+.radioSelecotr {
+    height: 26px;
+    background-color: #FCFCFC;
+    border-radius: 5px;
+    border: solid 1px #DDDDDD;
+    box-shadow: 0px 0px 3px #CCCCCC;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.1s;
+}
+
+.radioOptions {
+    position: relative;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    text-align: center;
+}
+
+.radioOption {
+    padding: 0 10px;
+    z-index: 1024;
+    cursor: pointer;
 }

@@ -68,7 +68,7 @@ function Library(props) {
         <div className={libraryStyle.library}>
             <div>
                 <div className={libraryStyle.title}>
-                    <div className={libraryStyle.titleText}>我的设计</div>
+                    <div className={libraryStyle.titleText}>My Designs</div>
                     <Button shape='round' icon={<PlusOutlined />} type='dashed' onClick={addDesign}>
                         New File
                     </Button>

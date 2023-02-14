@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Input, Space, message } from "antd";
-import { saveDesign } from "../../../utils/Request";
+import { newDesign } from "../../../utils/Request";
 
 export function useCreateDesignModel() {
     const [open, setOpen] = useState(false);
@@ -14,28 +14,33 @@ export function useCreateDesignModel() {
     const handleOk = (ev) => {
         console.log('save');
         setLoading(true);
+        console.log('new file:', inputName);
         
-        setTimeout(() => {
+        // setTimeout(() => {
+        //     setLoading(false);
+        //     setOpen(false);
+        // }, 2000);
+        newDesign(inputName).then((res) => {
             setLoading(false);
             setOpen(false);
-        }, 2000);
-        // saveDesign(inputName, {}).then((res) => {
-        //     setLoading(false);
-        //     setOpen(false);
-        //     navigateTo('/editor/' + inputName + '.json');
-        // }).catch((res) => {
-        //     console.error('Save design error:', res);
-        //     setLoading(false);
-        //     setOpen(false);
-        //     message.error('Save failed.');
-        // });
+            navigateTo('/editor/' + inputName + '.json');
+        }).catch((res) => {
+            console.error('Save design error:', res);
+            setLoading(false);
+            setOpen(false);
+            message.error('Save failed.');
+        });
     };
 
     const handleCancel = (ev) => {
         setOpen(false);
     };
 
-    const handleChange = (ev) => {};
+    const handleChange = (ev) => {
+        // console.log(ev);
+        setInputName(ev.target.value);
+        console.log(ev.target.value);
+    };
 
     useEffect(() => {
         setModal(
@@ -53,7 +58,7 @@ export function useCreateDesignModel() {
                 </Space>
             </Modal>
         );
-    }, [open, loading]);
+    }, [open, loading, inputName]);
 
     const showModal = () => {
         setOpen(true);

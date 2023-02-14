@@ -1,14 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Utils
+import { generateTypeId } from '../../../utils/IdGenerator';
+
 const initState = {
     status: 'default',
     circuit: {},
+    /* target and anchorPoint */
     target: {
         id: '',
+        x: 0,
+        y: 0,
         type: '',
+        pins: [],
         features: []
     },
     anchorPoint: null,
+    /* will soon be replaced by draft */
+    draft: null,
+    zoom: 6,
+    gridX: 100,
+    gridY: 100,
     selectedList: [],
     modified: false,
     elementTemplates: []
@@ -56,22 +68,18 @@ const slice = createSlice({
 
         setTragetElement: {
             reducer: (state, action) => {
-                const { id, type, features } = action.payload;
+                const { id, type, pins, features } = action.payload;
                 if (id !== undefined) {
                     state.target.id = id;
                 }
-                else {
-                    return state;
-                }
                 if (type !== undefined) {
                     state.target.type = type;
-                } else {
-                    state.target.type = '';
+                }
+                if (pins !== undefined) {
+                    state.target.pins = pins;
                 }
                 if (features !== undefined) {
                     state.target.features = features;
-                } else {
-                    state.target.features = [];
                 }
                 return state;
             },
@@ -132,7 +140,7 @@ const slice = createSlice({
 
         addElement: {
             reducer: (state, action) => {
-                const { id, pos, type, features } = action.payload;
+                const { id, pos, type, pins, features } = action.payload;
                 const { elementSet } = state.circuit;
                 if (id in elementSet) {
                     console.error('addElement: Id %s has already in the circuit.', id);
@@ -141,29 +149,66 @@ const slice = createSlice({
                 elementSet[id] = {
                     ...pos,
                     type,
+                    pins,
                     features
                 }
                 state.modified = true;
                 return state;
             },
-            prepare: (id, type, pos, features) => {
+            prepare: (id, type, pos, pins, features) => {
                 return {
-                    payload: { id, type, pos, features }
+                    payload: { id, type, pos, pins, features }
                 };
             }
         },
 
-        addDraftElement: {
+        applyDraftElement: {
             reducer: (state, action) => {
-                // const { x, y } = action.payload;
-                // const { target } = state.editor;
-                // console.log(target);
-                // state.modified = true;
+                const id = generateTypeId(state.target.type, state.circuit.elementSet);
+                state.circuit.elementSet[id] = state.target;
                 return state;
             },
-            prepare: (x, y) => {
+            prepare: () => {
                 return {
-                    payload: { x, y }
+                    payload: {}
+                };
+            }
+        },
+
+        setDraftInfo: {
+            reducer: (state, action) => {
+                const { data } = action.payload;
+                const { x = null, y = null, pins = null, features = null } = data;
+                let { target } = state;
+                if (x !== null) target.x = x;
+                if (y !== null) target.y = y;
+                if (pins !== null) {
+                    for (let i in pins) {
+                        for (let j in target.pins) {
+                            if (target.pins[j].name === pins[i].name) {
+                                target.pins[j].x = pins[i].x;
+                                target.pins[j].y = pins[i].y;
+                            }
+                        }
+                    }
+                }
+                if (features !== null) {
+                    for (let i in features) {
+                        for (let j in target.features) {
+                            if (target.features[j].name === features[i].name) {
+                                target.features[j].value = features[i].value;
+                                if (target.features[j].unit !== undefined && features[i].unit !== undefined) {
+                                    target.features[j].unit = features[i].unit;
+                                }
+                            }
+                        }
+                    }
+                }
+                return state;
+            },
+            prepare: (data) => {
+                return {
+                    payload: { data }
                 };
             }
         },
@@ -273,6 +318,46 @@ const slice = createSlice({
                     payload: { templates }
                 };
             }
+        },
+
+        zoomIn: {
+            reducer: (state, action) => {
+                const curZoom = state.zoom;
+                state.zoom += curZoom >= 20 ? 0 : 1;
+                return state;
+            },
+            prepare: () => {
+                return {
+                    payload: {}
+                };
+            }
+        },
+
+        zoomOut: {
+            reducer: (state, action) => {
+                const curZoom = state.zoom;
+                state.zoom -= curZoom <= 4 ? 0 : 1;
+                return state;
+            },
+            prepare: () => {
+                return {
+                    payload: {}
+                };
+            }
+        },
+
+        setGridCenter: {
+            reducer: (state, action) => {
+                const { x, y } = action.payload;
+                state.gridX = x;
+                state.gridY = y;
+                return state;
+            },
+            prepare: (x, y) => {
+                return {
+                    payload: { x, y }
+                };
+            }
         }
     }
 });
@@ -287,12 +372,16 @@ export const {
     setModified,
     setCircuit,
     addElement,
-    addDraftElement,
+    applyDraftElement,
     setElementInfo,
     setElementFeature,
     removeElement,
     changeElementId,
-    setElementTemplates
+    setElementTemplates,
+    zoomIn,
+    zoomOut,
+    setGridCenter,
+    setDraftInfo
 } = slice.actions;
 
 export default slice.reducer;

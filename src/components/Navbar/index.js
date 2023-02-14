@@ -36,7 +36,7 @@ function useConfirmQuitModal() {
         saveDesign(filename, circuit).then((res) => {
             setLoading(false);
             setOpen(false);
-            navigateTo('/');
+            navigateTo('/library');
         }).catch((res) => {
             console.error('Save design error:', res);
             setLoading(false);
@@ -51,7 +51,7 @@ function useConfirmQuitModal() {
 
     const handleQuit = (ev) => {
         setOpen(false);
-        navigateTo('/');
+        navigateTo('/library');
     };
 
     useEffect(() => {
@@ -93,7 +93,7 @@ function Navbar(props) {
             console.log('try to quit when modified');
             showQuitConfirmModal();
         } else {
-            navTo('/');
+            navTo('/library');
         }
     }
 
