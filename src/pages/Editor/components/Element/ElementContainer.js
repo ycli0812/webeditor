@@ -49,7 +49,6 @@ function ElementContainer(props) {
             //     break;
             // }
             case 'resistor': {                
-                // console.log(`(${x1},${y1}),(${x2},${y2})`);
                 elementList.push(
                     // <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} transform={`translate(${pixelX}, ${pixelY - gridSize / 5}) scale(${gridSize / 250})`}>
                     //     {/* <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />

@@ -246,6 +246,28 @@ const slice = createSlice({
             }
         },
 
+        moveElement: {
+            reducer: (state, action) => {
+                const { id, newGridX, newGridY } = action.payload;
+                const target = state.circuit.elementSet[id];
+                const deltaX = newGridX - target.x;
+                const deltaY = newGridY - target.y;
+                target.x = newGridX;
+                target.y = newGridY;
+                for(let i in target.pins) {
+                    target.pins[i].x += deltaX;
+                    target.pins[i].y += deltaY;
+                }
+                state.modified = true;
+                return state;
+            },
+            prepare: (id, newGridX, newGridY) => {
+                return {
+                    payload: { id, newGridX, newGridY }
+                };
+            }
+        },
+
         setElementFeature: {
             reducer: (state, action) => {
                 const { id, name, value, unit } = action.payload;
@@ -386,7 +408,8 @@ export const {
     zoomIn,
     zoomOut,
     setGridCenter,
-    setDraftInfo
+    setDraftInfo,
+    moveElement
 } = slice.actions;
 
 export default slice.reducer;

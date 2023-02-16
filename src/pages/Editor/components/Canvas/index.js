@@ -12,7 +12,7 @@ import { generateTypeId } from '../../../../utils/IdGenerator';
 import ElementContainer from '../Element/ElementContainer';
 
 // Redux actions
-import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement } from '../../slices/editorSlice';
+import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement, moveElement } from '../../slices/editorSlice';
 import { zoomIn, zoomOut, setGridCenter } from '../../slices/editorSlice';
 
 // Hooks
@@ -164,13 +164,8 @@ function Canvas(props) {
             case 'draggingComponent': {
                 const target = targetElement.id;
                 let updated = { ...piexelPosList };
-                console.log('zoom', zoom);
-                console.log('offset', offsetX, offsetY);
-                console.log('grid', gridX, gridY);
-                console.log('init offset', updated[target].initOffset.x, updated[target].initOffset.y);
                 const newX = (offsetX - gridX - updated[target].initOffset.x) / (zoom * 5) * 100;
                 const newY = (offsetY - gridY - updated[target].initOffset.y) / (zoom * 5) * 100;
-                console.log('newXY', newX, newY);
                 updated[target].pixelPos = {
                     x: newX,
                     y: newY
@@ -200,8 +195,8 @@ function Canvas(props) {
                     selected: false
                 };
                 setPixelPosList(newPixelSet);
-                dispatch(setElementInfo({ id: targetId, x, y }));
-                // dispatch()
+                // dispatch(setElementInfo({ id: targetId, x, y }));
+                dispatch(moveElement(targetId, x, y));
                 if (!moved) {
                     dispatch(clearSelect());
                     dispatch(selectElement(targetId));
