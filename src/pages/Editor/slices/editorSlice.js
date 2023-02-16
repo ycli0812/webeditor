@@ -215,18 +215,23 @@ const slice = createSlice({
 
         setElementInfo: {
             reducer: (state, action) => {
-                const { id, pos, type, features } = action.payload;
+                const { id, x, y, type, pins, features } = action.payload;
                 const { elementSet } = state.circuit;
                 if (id === undefined || !id in elementSet) {
                     console.error('setElementInfo: A valid id must be given. Received:', id);
                     return state;
                 }
-                if (pos !== undefined) {
-                    elementSet[id].x = pos.x;
-                    elementSet[id].y = pos.y;
+                if (x !== undefined) {
+                    elementSet[id].x = x;
+                }
+                if (y !== undefined) {
+                    elementSet[id].y = y;
                 }
                 if (type !== undefined) {
                     elementSet[id].type = type;
+                }
+                if (pins !== undefined) {
+                    elementSet[id].pins = pins;
                 }
                 if (features !== undefined) {
                     elementSet[id].features = features;

@@ -16,8 +16,8 @@ import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement
 import { zoomIn, zoomOut, setGridCenter } from '../../slices/editorSlice';
 
 // Hooks
-// import useElementAdder from '../../hooks/ElementAdder';
 import useElementAdder from '../../hooks/ElementAdder';
+import useCanvasViewbox from '../../hooks/CnvasViewboxHook';
 
 function Canvas(props) {
     const {
@@ -47,6 +47,8 @@ function Canvas(props) {
     // const add = useElementAdder();
     const addResistor = useElementAdder('resistor');
     const addWire = useElementAdder('wire');
+
+    const viewbox = useCanvasViewbox(canvasHeight, canvasWidth);
 
     // 坐标系位置变化时执行
     useEffect(() => {
@@ -94,7 +96,7 @@ function Canvas(props) {
         for (let id in circuit.elementSet) {
             const { x, y } = circuit.elementSet[id];
             updated[id] = {
-                pixelPos: { x: x * gridSize, y: y * gridSize },
+                pixelPos: { x: x * 100, y: y * 100 },
                 initOffset: { x: 0, y: 0 },
                 selected: false
             }
@@ -103,12 +105,14 @@ function Canvas(props) {
     }
 
     function findNearestGridPoint(offsetX, offsetY) {
-        let x = Math.floor((offsetX - gridX) / gridSize);
-        let y = Math.floor((offsetY - gridY) / gridSize);
-        let dx = offsetX - gridX - x * gridSize, dy = offsetY - gridY - y * gridSize;
+        const svgOffsetX = (offsetX - gridX) / (zoom * 5) * 100;
+        const svgOffsetY = (offsetY - gridY) / (zoom * 5) * 100;
+        let x = Math.floor(svgOffsetX / 100);
+        let y = Math.floor(svgOffsetY / 100);
+        let dx = svgOffsetX - x * 100, dy = svgOffsetY - y * 100;
         return {
-            x: dx > gridSize / 2 ? (x + 1) : x,
-            y: dy > gridSize / 2 ? (y + 1) : y
+            x: dx > 100 / 2 ? (x + 1) : x,
+            y: dy > 100 / 2 ? (y + 1) : y
         };
     }
 
@@ -116,8 +120,6 @@ function Canvas(props) {
         if (status == 'wiring') return;
         let newSet = { ...piexelPosList };
         newSet[id].initOffset = { x, y };
-        // newSet[id].initOffsetX = x;
-        // newSet[id].initOffsetY = y;
         setPixelPosList(newSet);
         dispatch(setEditorStatus('draggingComponent'));
         dispatch(setTragetElement({ id }));
@@ -128,7 +130,7 @@ function Canvas(props) {
         ev.stopPropagation();
         setMoved(false);
         let { offsetX, offsetY } = ev.nativeEvent;
-        console.log(ev);
+        // console.log(ev);
         switch (status) {
             case 'default': {
                 // default状态下按下鼠标，进入拖拽模式
@@ -136,14 +138,13 @@ function Canvas(props) {
                 break;
             }
             case 'adding': {
-                // // 计算位置
                 const { x, y } = findNearestGridPoint(offsetX, offsetY);
-                if(addResistor(x, y)) dispatch(setEditorStatus('default'));
+                if (addResistor(x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
             case 'wiring': {
-                const {x, y} = findNearestGridPoint(offsetX, offsetY);
-                if(addWire(x, y)) dispatch(setEditorStatus('default'));
+                const { x, y } = findNearestGridPoint(offsetX, offsetY);
+                if (addWire(x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
             default: break;
@@ -156,8 +157,6 @@ function Canvas(props) {
         const { offsetX, offsetY } = ev.nativeEvent;
         switch (status) {
             case 'draggingCanvas': {
-                // setGridX(gridX + movementX);
-                // setGridY(gridY + movementY);
                 dispatch(setGridCenter(gridX + movementX, gridY + movementY));
                 setMoved(true);
                 break;
@@ -165,9 +164,16 @@ function Canvas(props) {
             case 'draggingComponent': {
                 const target = targetElement.id;
                 let updated = { ...piexelPosList };
+                console.log('zoom', zoom);
+                console.log('offset', offsetX, offsetY);
+                console.log('grid', gridX, gridY);
+                console.log('init offset', updated[target].initOffset.x, updated[target].initOffset.y);
+                const newX = (offsetX - gridX - updated[target].initOffset.x) / (zoom * 5) * 100;
+                const newY = (offsetY - gridY - updated[target].initOffset.y) / (zoom * 5) * 100;
+                console.log('newXY', newX, newY);
                 updated[target].pixelPos = {
-                    x: offsetX - gridX - updated[target].initOffset.x,
-                    y: offsetY - gridY - updated[target].initOffset.y
+                    x: newX,
+                    y: newY
                 };
                 setPixelPosList(updated);
                 setMoved(true);
@@ -185,15 +191,17 @@ function Canvas(props) {
                 const targetId = targetElement.id;
                 const { x: initOffsetX, y: initOffsetY } = piexelPosList[targetId].initOffset;
                 let { x, y } = findNearestGridPoint(offsetX - initOffsetX, offsetY - initOffsetY);
+                console.log('mouseup:', x, y);
                 // 更新像素坐标   
                 let newPixelSet = { ...piexelPosList };
                 newPixelSet[targetId] = {
-                    pixelPos: { x: x * gridSize, y: y * gridSize },
+                    pixelPos: { x: x * 100, y: y * 100 },
                     initOffset: { x: 0, y: 0 },
                     selected: false
                 };
                 setPixelPosList(newPixelSet);
-                dispatch(setElementInfo({ id: targetId, pos: { x, y } }));
+                dispatch(setElementInfo({ id: targetId, x, y }));
+                // dispatch()
                 if (!moved) {
                     dispatch(clearSelect());
                     dispatch(selectElement(targetId));
@@ -231,17 +239,17 @@ function Canvas(props) {
                 id={canvasStyle.elementsContainer}
                 height={canvasHeight}
                 width={canvasWidth}
-                viewBox={[-gridX, -gridY, canvasWidth, canvasHeight]}
+                // viewBox={[-gridX, -gridY, canvasWidth, canvasHeight]}
+                viewBox={viewbox}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onWheel={handleMouseWheel}
                 onMouseMove={handleMouseMove}>
+                {/* <rect x={100} y={100} height={100} width={100} /> */}
                 <ElementContainer
                     zoom={zoom}
-                    wireWidth={2}
-                    gridCenter={{ x: gridX, y: gridY }}
-                    clientStatus={piexelPosList}
-                    onMouseDown={onMouseDownOnElement} />
+                    pixelPosSet={piexelPosList}
+                    onMouseDownOnElement={onMouseDownOnElement} />
             </svg>
             <canvas
                 id={canvasStyle.realCanvas}
