@@ -61,12 +61,6 @@ function ElementContainer(props) {
                 break;
             }
             case 'wire': {
-                // const x1 = getValue('x1', id), x2 = getValue('x2', id), y1 = getValue('y1', id), y2 = getValue('y2', id), hexColor = getValue('color', id);
-                // elementList.push(
-                //     <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)}>
-                //         <line x1={x1 * gridSize} y1={y1 * gridSize} x2={x2 * gridSize} y2={y2 * gridSize} stroke={hexColor} strokeWidth={4}></line>
-                //     </g>
-                // );
                 elementList.push(<Wire key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />)
                 break;
             }

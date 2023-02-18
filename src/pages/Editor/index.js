@@ -65,7 +65,7 @@ function useRequestElementList() {
                     },
                     {
                         name: 'extended',
-                        value: false
+                        value: true
                     }
                 ]
             },

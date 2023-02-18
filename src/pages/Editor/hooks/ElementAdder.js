@@ -7,13 +7,24 @@ import { generateTypeId } from '../../../utils/IdGenerator';
 // Reduc actions
 import { setTragetElement, applyDraftElement, setDraftInfo } from '../slices/editorSlice';
 
+/**
+ * This hook provides
+ *
+ * @param {*} type
+ * @return {*} 
+ */
 function useElementAdder(type) {
     const dispatch = useDispatch();
-    const { elementTemplates, circuit } = useSelector(state => state.editor);
+    const { elementTemplates, circuit, target: { type: curType } } = useSelector(state => state.editor);
     const [countPoints, setCountPoints] = useState(0);
 
+    // when type to add changes, reset adding progress
+    useEffect(() => {
+        clearCount();
+    }, [curType]);
+
     const clearCount = () => {
-        setCountPoints(0)
+        setCountPoints(0);
     };
 
     const incCount = () => {
@@ -47,6 +58,7 @@ function useElementAdder(type) {
                     pins: [{ name: 'start', x, y }]
                 }));
                 incCount();
+                console.log('resistor point 1');
                 return false;
             }
             case 1: {
@@ -57,6 +69,7 @@ function useElementAdder(type) {
                 clearCount();
                 // add draft element to circuit
                 dispatch(applyDraftElement());
+                console.log('resistor point 2');
                 return true;
             }
             default: break;
@@ -77,6 +90,7 @@ function useElementAdder(type) {
                     ]
                 }));
                 incCount();
+                console.log('wire point 1');
                 return false;
             }
             case 1: {
@@ -90,16 +104,40 @@ function useElementAdder(type) {
                 clearCount();
                 // add draft element to circuit
                 dispatch(applyDraftElement());
+                console.log('wire point 2');
                 return true;
             }
             default: break;
         }
     };
 
+    const breadboardAdder = (x, y) => {
+        dispatch(setDraftInfo({
+            x,
+            y,
+            features: [
+                { name: 'column', value: 15 }
+            ]
+        }));
+        dispatch(applyDraftElement());
+        clearCount();
+        return true;
+    };
+
+    const generalAdder = (type, x, y) => {
+        switch (type) {
+            case 'resistor': return resistorAdder(x, y);
+            case 'wire': return wireAdder(x, y);
+            case 'breadboard': return breadboardAdder(x, y);
+            default: return false;
+        }
+    };
+
     switch (type) {
         case 'resistor': return resistorAdder;
         case 'wire': return wireAdder;
-        default: return;
+        case 'breadboard': return breadboardAdder;
+        default: return generalAdder;
     }
 }
 

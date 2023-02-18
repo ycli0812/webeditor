@@ -49,7 +49,7 @@ function Breadboard(props) {
     const getNumberLabel = (nCol, offsetY) => {
         if(nCol % 5 != 4) return null;
         return (
-            <text key={String(offsetY) + String(nCol)} x={(nCol + 1) * 100} y={offsetY} fontSize={50} fontFamily='consolas' style={{fill: '#B0B0B0'}} textAnchor='middle'>{nCol + 1}</text>
+            <text key={String(offsetY) + String(nCol)} x={(nCol + 1) * 100} y={offsetY} fontSize={50} fontFamily='consolas' style={{fill: '#B0B0B0'}} textAnchor='middle' fontWeight={600}>{nCol + 1}</text>
         );
     };
     for(let i = 0; i < cols; i++) {

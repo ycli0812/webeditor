@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-// import { store } from './app/store';
-// import { Provider } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 
+// Style
 import './App.css';
 
 // Components
@@ -12,8 +12,21 @@ import Editor from './pages/Editor';
 import Library from './pages/Library';
 import Login from './pages/Login';
 
+// Redux actions
+import { login } from './app/globalSlice';
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userName = Cookies.get('user');
+    console.log('App effect');
+    if(userName !== undefined) {
+      console.log('App set state');
+      dispatch(login(true));
+    }
+  }, []);
+
   const { logined } = useSelector(state => state.global);
 
   return (

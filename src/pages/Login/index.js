@@ -1,11 +1,12 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 // Style
 import loginStyle from './Login.module.css';
-import fancyInputStyle from './FancyInput.module.css';
+// import fancyInputStyle from './FancyInput.module.css';
 
 // Antd components
 import { Input, Space, Button, message } from 'antd';
@@ -13,59 +14,74 @@ import { Input, Space, Button, message } from 'antd';
 // Redux actions
 import { login } from '../../app/globalSlice';
 
+// Components
+import FancyInput from '../../components/FancyInput';
+
 // Images
-import login_bg from '../../assets/login_bg.jpg';
+// import login_bg from '../../assets/login_bg.jpg';
 
-function FancyInput(props) {
-    const {
-        name,
-        type,
-        placeholder
-    } = props;
+// function FancyInput(props) {
+//     const {
+//         name,
+//         type,
+//         placeholder
+//     } = props;
 
-    const [focused, setFocused] = useState(false);
-    const [placeHolderClass, setPlaceholderClass] = useState(fancyInputStyle.placeholderBlured);
-    const [isEmpty, setIsEmpty] = useState(true);
+//     const [focused, setFocused] = useState(false);
+//     const [placeHolderClass, setPlaceholderClass] = useState(fancyInputStyle.placeholderBlured);
+//     const [isEmpty, setIsEmpty] = useState(true);
 
-    const handleFocus = (ev) => {
-        setFocused(true);
-        setPlaceholderClass(fancyInputStyle.placeholderFocused);
-    };
+//     const handleFocus = (ev) => {
+//         setFocused(true);
+//         setPlaceholderClass(fancyInputStyle.placeholderFocused);
+//     };
 
-    const handleBlur = (ev) => {
-        if (isEmpty) {
-            setPlaceholderClass(fancyInputStyle.placeholderBlured);
-        }
-        setFocused(false);
-    };
+//     const handleBlur = (ev) => {
+//         if (isEmpty) {
+//             setPlaceholderClass(fancyInputStyle.placeholderBlured);
+//         }
+//         setFocused(false);
+//     };
 
-    const handleChange = (ev) => {
-        console.log(ev);
-        const { value } = ev.target;
-        if (value == '') {
-            setIsEmpty(true);
-        } else {
-            setIsEmpty(false);
-        }
-    }
+//     const handleChange = (ev) => {
+//         console.log(ev);
+//         const { value } = ev.target;
+//         if (value == '') {
+//             setIsEmpty(true);
+//         } else {
+//             setIsEmpty(false);
+//         }
+//     }
 
-    return (
-        <div className={focused ? fancyInputStyle.containerFocused : fancyInputStyle.containerBlured}>
-            <Input bordered={false} onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange} type={type} />
-            <div className={placeHolderClass} style={{ color: focused ? '#1F66FF' : '#AAAAAA' }}>{placeholder}</div>
-        </div>
-    );
-}
+//     return (
+//         <div className={focused ? fancyInputStyle.containerFocused : fancyInputStyle.containerBlured}>
+//             <Input bordered={false} onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange} type={type} />
+//             <div className={placeHolderClass} style={{ color: focused ? '#1F66FF' : '#AAAAAA' }}>{placeholder}</div>
+//         </div>
+//     );
+// }
 
 function Login(props) {
     const dispatch = useDispatch();
     const nav = useNavigate();
+
+    const { logined } = useSelector(state => state.global);
+    useEffect(() => {
+        const userName = Cookies.get('user');
+        console.log('Login effect');
+        if(userName !== undefined) {
+            dispatch(login(true));
+            console.log('Login nav to library');
+            nav('/library');
+        }
+    }, []);
 
     const handleLogin = (ev) => {
         message.info({
             content: 'Backend interface not done yet. Account will not be checked.',
             duration: 2
         });
+        Cookies.set('user', 'test_user');
         dispatch(login(true));
         nav('/library');
     };

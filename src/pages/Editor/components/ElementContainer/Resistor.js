@@ -52,7 +52,7 @@ function Resistor(props) {
     return (
         <g key={id} onMouseDown={handleMouseDown} transform-origin={`${0} ${50}`} transform={`translate(${pixelX} ${pixelY - 50}) rotate(${deg})`}>
             <rect x="0" y="46" height="8" width={length} fill="silver" />
-            <g transform={`translate(${length / 2 - 125},0)`}>
+            <g transform={`translate(${length / 2 - 62.5},25) scale(0.5)`}>
                 <path d="M 50,20 C -10,0,-10,100,50,80 L 200,80 C 260,100,260,0,200,20 Z" fill="#19a1d6" />
                 <rect x="50" y="20" height="60" width="15" fill={rings[0]} />
                 <rect x="110" y="20" height="60" width="15" fill={rings[1]} />
