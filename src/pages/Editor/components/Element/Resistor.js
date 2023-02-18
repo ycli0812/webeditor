@@ -21,7 +21,7 @@ function Resistor(props) {
     const getPinPos = usePinPositionGetter(id);
 
     const { x: gridX, y: gridY } = useSelector(state => state.editor.circuit.elementSet[id]);
-    const { gridX: gridCenterX, gridY: gridCenterY, zoom } = useSelector(state => state.editor);
+    const { gridX: gridCenterX, gridY: gridCenterY, zoom, status } = useSelector(state => state.editor);
 
     // find position of pins
     const { x: x1, y: y1 } = getPinPos('start');
@@ -29,17 +29,19 @@ function Resistor(props) {
 
     // calculate length and rotate degree
     const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) * 100;
-    const deg = Math.asin((y2 - y1) / length * 100) * 180 / Math.PI;
-    console.log('deg', deg);
+    let deg = Math.asin((y2 - y1) / length * 100) * 180 / Math.PI;
+    if(x2 < x1) deg = 180 - deg;
+    // console.log('deg', deg);
 
     // compute color of rings
     const rings = computeColorRing(getValue('resistance'), getUnit('resistance'), getValue('tolerance'));
 
     function handleMouseDown(ev) {
+        if (status === 'wiring' || status === 'adding') return;
         ev.stopPropagation();
-        console.log('Element click event', ev);
+        // console.log('Element click event', ev);
         const { offsetX, offsetY } = ev.nativeEvent;
-        console.log(offsetX, offsetY);
+        // console.log(offsetX, offsetY);
         const initOffset = {
             x: offsetX - gridCenterX - zoom * 5 * gridX,
             y: offsetY - gridCenterY - zoom * 5 * gridY

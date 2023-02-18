@@ -117,7 +117,7 @@ function Canvas(props) {
     }
 
     function onMouseDownOnElement(id, x, y) {
-        if (status == 'wiring') return;
+        if (status === 'wiring' || status === 'adding') return;
         let newSet = { ...piexelPosList };
         newSet[id].initOffset = { x, y };
         setPixelPosList(newSet);

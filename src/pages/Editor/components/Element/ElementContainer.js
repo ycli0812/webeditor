@@ -10,6 +10,7 @@ import { useFeatureValueGetter, useFeatureUnitGetter, usePinPositionGetter } fro
 
 // Components
 import Resistor from './Resistor';
+import Breadboard from './Breadboard';
 
 function ElementContainer(props) {
     const {
@@ -50,97 +51,14 @@ function ElementContainer(props) {
             // }
             case 'resistor': {                
                 elementList.push(
-                    // <g key={id} onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} transform={`translate(${pixelX}, ${pixelY - gridSize / 5}) scale(${gridSize / 250})`}>
-                    //     {/* <rect id='body' height={gridSize} width={gridSize * 2} y={pixelY + gridSize / 2} x={pixelX + gridSize} strokeWidth='1' stroke='#8A8365' fill='#EFE4B0' />
-                    //     <rect id='wire-right' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX + 3 * gridSize} strokeWidth='0'
-                    //         stroke='#000' fill='#000000' />
-                    //     <rect id='wire-left' height={wireWidth} width={gridSize} y={pixelY + gridSize - wireWidth / 2} x={pixelX} strokeWidth='0'
-                    //         stroke='#000' fill='#000000' />
-                    //     <rect id='ring1' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.2} fill={rings[0]} />
-                    //     <rect id='ring2' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.5} fill={rings[1]} />
-                    //     <rect id='ring3' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 0.8} fill={rings[2]} />
-                    //     <rect id='ring4' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize + gridSize * 1.1} fill={rings[3]} />
-                    //     <rect id='ring5' height={gridSize} width={gridSize * 0.2} y={pixelY + gridSize / 2} x={pixelX + gridSize * 3 - gridSize * 0.4} fill={rings[4]} /> */}
-                    //     <rect x="0" y="46" height="8" width={250 * Math.abs(x2 - x1)} fill="#CCCCCC" />
-                    //     <g transform={`translate(${250 * Math.abs(x2 - x1) / 2 - 125},0)`}>
-                    //         <path d="M 50,20 C -10,0,-10,100,50,80 L 200,80 C 260,100,260,0,200,20 Z" fill="#19a1d6" />
-                    //         <rect x="50" y="20" height="60" width="15" fill={rings[0]} />
-                    //         <rect x="110" y="20" height="60" width="15" fill={rings[1]} />
-                    //         <rect x="135" y="20" height="60" width="15" fill={rings[2]} />
-                    //         <rect x="160" y="20" height="60" width="15" fill={rings[3]} />
-                    //         <rect x="185" y="20" height="60" width="15" fill={rings[4]} />
-                    //     </g>
-                    // </g>
                     <Resistor key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />
                 );
                 break;
             }
-            // case 'breadboard': {
-            //     const cols = getValue('column', id);
-            //     const extended = getValue('extended', id);
-            //     const holes = [];
-            //     const sides = [];
-            //     const holeSize = zoom * 3;
-            //     for (let b = 0; b < 2; b++) {
-            //         for (let m = 0; m < 5; m++) {
-            //             for (let n = 0; n < cols; n++) {
-            //                 holes.push(
-            //                     <rect
-            //                         key={cols * 5 * b + m * cols + n}
-            //                         id={'svg_' + m * n}
-            //                         height={holeSize}
-            //                         width={holeSize}
-            //                         y={pixelY + gridSize - holeSize / 2 + b * 6 * gridSize + m * gridSize}
-            //                         x={pixelX + gridSize - holeSize / 2 + n * gridSize}
-            //                         stroke='#000'
-            //                         fill='#777777' />
-            //                 );
-            //             }
-            //         }
-            //     }
-            //     if (extended) {
-            //         for (let m = 0; m < 2; m++) {
-            //             for (let n = 0; n < cols; n++) {
-            //                 sides.push(
-            //                     <rect
-            //                         key={m * cols + n}
-            //                         id={'svg_' + m * n}
-            //                         height={holeSize}
-            //                         width={holeSize}
-            //                         y={pixelY + gridSize * 13 - holeSize / 2 + m * gridSize}
-            //                         x={pixelX + gridSize - holeSize / 2 + n * gridSize}
-            //                         stroke='#000'
-            //                         fill='#777777' />
-            //                 );
-            //             }
-            //         }
-            //         for (let m = 0; m < 2; m++) {
-            //             for (let n = 0; n < cols; n++) {
-            //                 sides.push(
-            //                     <rect
-            //                         key={m * cols + n + cols * 2}
-            //                         id={'svg_' + m * n}
-            //                         height={holeSize}
-            //                         width={holeSize}
-            //                         y={pixelY - gridSize * 2 - holeSize / 2 + m * gridSize}
-            //                         x={pixelX + gridSize - holeSize / 2 + n * gridSize}
-            //                         stroke='#000'
-            //                         fill='#777777' />
-            //                 );
-            //             }
-            //         }
-            //     }
-            //     breadboards.push(
-            //         <g onMouseDown={(ev) => handleMouseDown(ev, id, pixelX, pixelY)} key={id}>
-            //             <rect id='svg_1' x={pixelX} y={pixelY} height={12 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' />
-            //             {extended ? <rect x={pixelX} y={pixelY - 3 * gridSize} height={3 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' /> : null}
-            //             {extended ? <rect x={pixelX} y={pixelY + 12 * gridSize} height={3 * gridSize} width={(cols + 1) * gridSize} strokeWidth='0' stroke='#000' fill='#EEEEEE' /> : null}
-            //             {holes}
-            //             {sides}
-            //         </g>
-            //     );
-            //     break;
-            // }
+            case 'breadboard': {
+                breadboards.push(<Breadboard key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
+                break;
+            }
             // case 'wire': {
             //     const x1 = getValue('x1', id), x2 = getValue('x2', id), y1 = getValue('y1', id), y2 = getValue('y2', id), hexColor = getValue('color', id);
             //     elementList.push(
