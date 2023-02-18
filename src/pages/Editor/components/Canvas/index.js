@@ -9,7 +9,7 @@ import canvasStyle from './Canvas.module.css';
 import { generateTypeId } from '../../../../utils/IdGenerator';
 
 // Components
-import ElementContainer from '../Element/ElementContainer';
+import ElementContainer from '../ElementContainer/index';
 
 // Redux actions
 import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement, moveElement } from '../../slices/editorSlice';
