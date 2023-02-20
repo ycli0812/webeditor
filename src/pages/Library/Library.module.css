@@ -1,45 +1,41 @@
+/* library page */
 .library {
     padding: 20px 50px;
     display: grid;
-    grid-template-columns: 60% 40%;
+    grid-template-columns: 40% 60%;
 }
 
+/* list header */
 .title {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 40px auto;
     align-items: center;
-    justify-content: space-between;
+    column-gap: 10px;
+}
+
+.title img {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
 }
 
 .titleText {
     width: fit-content;
-    font-size: 26px;
+    font-size: 30px;
+    line-height: 50px;
     font-weight: bold;
-    border-bottom: 4px solid #0F329C;
+    /* border-bottom: 4px solid #0F329C; */
     padding: 5px 0;
 }
 
-.designList {
-    margin: 10px 0;
-    padding: 0;
-}
-
+/* list item */
 .design {
-    height: 40px;
-    display: grid;
-    grid-template-columns: 40px auto 200px;
-    align-items: center;
     cursor: pointer;
+    transition: 0.5s;
 }
 
 .design:hover {
     background-color: #EEEEEE;
-}
-
-.design img {
-    width: 30px;
-    height: 30px;
-    margin-left: 5px;
 }
 
 .filename {
@@ -55,4 +51,24 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: right;
     margin-right: 10px;
+}
+
+/* list footer */
+.listFooter {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+/* list loading */
+.listLoading {
+    min-height: 100px;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.05);
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 8px 8px;
 }

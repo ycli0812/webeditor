@@ -127,6 +127,7 @@ function Editor(props) {
             content: '加载中'
         });
         getDesign(filename).then((res) => {
+            console.log('load circuit', res);
             dispatch(setCircuit(res.data));
             msg.open({
                 key: 'loadCircuit',

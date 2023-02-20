@@ -13,10 +13,30 @@ import { getDesignList } from '../../utils/Request';
 
 // Antd components
 import { PlusOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Result, List, Spin, Typography, Space } from 'antd';
 
 // Hooks
 import { useCreateDesignModel } from './hooks/showCreatModal';
+
+function useDesignList() {
+    const [designList, setDesignList] = useState([]);
+    const [status, setStatus] = useState('loading');
+
+    useEffect(() => {
+        getDesignList().then((res) => {
+            console.log(res);
+            setTimeout(() => {
+                setDesignList(res.data);
+                setStatus('success');
+            }, 1000);
+        }).catch((res) => {
+            console.error('Can not load files.');
+            setStatus('fail');
+        });
+    }, []);
+
+    return [designList, status];
+}
 
 function ListItem(props) {
     const {
@@ -25,40 +45,55 @@ function ListItem(props) {
         onClick
     } = props;
 
+    const d = new Date(editTime);
+    console.log(d);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
     return (
-        <div className={libraryStyle.design} onClick={onClick}>
-            <img alt='' src={blueprint}></img>
-            <div className={libraryStyle.filename}>{fileName}</div>
-            <div className={libraryStyle.editTime}>{editTime}</div>
-        </div>
+        <List.Item className={libraryStyle.design} onClick={onClick}>
+            <Space direction='vertical' size={5}>
+                <Typography.Text strong style={{ fontSize: 18 }}>{fileName}</Typography.Text>
+                <Typography.Text type='secondary'>{dateStr}</Typography.Text>
+            </Space>
+        </List.Item>
     );
 }
 
 function Library(props) {
     const navigate = useNavigate();
 
-    const [designList, setDesignList] = useState([]);
+    const [designList, designListStatus] = useDesignList();
 
     const [modal, showModal] = useCreateDesignModel();
 
-    // 向服务器请求
-    useEffect(() => {
-        getDesignList().then((res) => {
-            console.log(res);
-            setDesignList(res.data);
-        }).catch((res) => {
-            setDesignList([{
-                filename: 'network_error_default_file.json',
-                editTime: '2023-01-01'
-            }]);
-        });
-    }, []);
-
-    const designs = designList.map((item, index) => {
+    const listContent = designList.map((item, index) => {
         return (
-            <ListItem key={index} fileName={item.filename} editTime={item.editTime} onClick={() => { navigate('/editor/' + item.filename) }} />
+            <ListItem key={index} fileName={item.filename} editTime={item.lastEdit} onClick={() => { navigate('/editor/' + item.filename) }} />
         );
     });
+
+    const listLoading = (
+        <div className={libraryStyle.listLoading}>
+            <Spin />
+        </div>
+    );
+
+    const listError = (
+        <Result status='error' title='Error!' subTitle={<span>Sorry. We can not load your files now. <a onClick={() => {window.location.reload()}}>Reload</a></span>} />
+    );
+
+    const listHeader = (
+        <div className={libraryStyle.title}>
+            <img alt='' src={blueprint}></img>
+            <div className={libraryStyle.titleText}>My Designs</div>
+        </div>
+    );
+
+    const listFooter = designListStatus === 'success' ? (
+        <div className={libraryStyle.listFooter}>
+            <Button shape='round' icon={<PlusOutlined />} type='dashed' onClick={addDesign}>New File</Button>
+        </div>
+    ) : null;
 
     function addDesign(ev) {
         showModal();
@@ -67,15 +102,11 @@ function Library(props) {
     return (
         <div className={libraryStyle.library}>
             <div>
-                <div className={libraryStyle.title}>
-                    <div className={libraryStyle.titleText}>My Designs</div>
-                    <Button shape='round' icon={<PlusOutlined />} type='dashed' onClick={addDesign}>
-                        New File
-                    </Button>
-                </div>
-                <div className={libraryStyle.designList}>
-                    {designs}
-                </div>
+                <List size='small' bordered split header={listHeader} footer={listFooter}>
+                    {designListStatus === 'fail' ? listError : null}
+                    {designListStatus === 'success' ? listContent : null}
+                    {designListStatus === 'loading' ? listLoading : null}
+                </List>
             </div>
             {modal}
         </div>
