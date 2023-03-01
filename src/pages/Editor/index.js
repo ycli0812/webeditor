@@ -128,10 +128,15 @@ function Editor(props) {
 
     const [circuit, circuitStatus] = useCircuitLoader({ filename, source, _id });
 
-    // dispatch(initEditor());
     useEffect(() => {
         dispatch(initEditor());
+
+        return () => {
+            dispatch(initEditor());
+        }
     }, []);
+
+    useRequestElementList();
 
     // init by querying DB and loading local file
     useEffect(() => {
