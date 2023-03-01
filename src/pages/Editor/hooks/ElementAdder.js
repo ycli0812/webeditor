@@ -112,11 +112,13 @@ function useElementAdder(type) {
     };
 
     const breadboardAdder = (x, y) => {
+        initDraft('breadboard');
         dispatch(setDraftInfo({
             x,
             y,
             features: [
-                { name: 'column', value: 15 }
+                { name: 'column', value: 15 },
+                { name: 'extended', value: true}
             ]
         }));
         dispatch(applyDraftElement());

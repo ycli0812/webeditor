@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initState = {
     user: '',
-    logined: false
+    logined: false,
+    indexedDbHandler: null
 };
 
 const slice = createSlice({
@@ -20,11 +21,23 @@ const slice = createSlice({
                     payload: { result }
                 };
             }
+        },
+        initIndexDb: {
+            reducer: (state, action) => {
+                state.indexedDbHandler = action.payload.handler;
+                return state;
+            },
+            prepare: (handler) => {
+                return {
+                    payload: { handler }
+                };
+            }
         }
     }
 });
 
 export default slice.reducer;
 export const {
-    login
+    login,
+    initIndexDb
 } = slice.actions;

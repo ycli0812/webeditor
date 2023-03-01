@@ -13,19 +13,27 @@ import Library from './pages/Library';
 import Login from './pages/Login';
 
 // Redux actions
-import { login } from './app/globalSlice';
+import { initIndexDb, login } from './app/globalSlice';
+import useIndexedDB from './hooks/useIndexedDB';
 
 function App() {
   const dispatch = useDispatch();
+
+  // const [db, dbLoaded] = useIndexedDB();
 
   useEffect(() => {
     const userName = Cookies.get('user');
     console.log('App effect');
     if(userName !== undefined) {
-      console.log('App set state');
       dispatch(login(true));
     }
   }, []);
+
+  // useEffect(() => {
+  //   if(dbLoaded) {
+  //     dispatch(initIndexDb(db));
+  //   }
+  // }, [dbLoaded]);
 
   const { logined } = useSelector(state => state.global);
 
@@ -36,7 +44,7 @@ function App() {
         <div className="app">
           {logined ? <Navbar /> : null}
           <Routes>
-            <Route path='/editor/:filename' element={<Editor />}></Route>
+            <Route path='/editor' element={<Editor />}></Route>
             <Route path='/library' element={<Library />}></Route>
             <Route path='/' element={<Login />}></Route>
           </Routes>

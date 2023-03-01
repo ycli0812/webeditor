@@ -1,7 +1,13 @@
-<svg height="300" width="1000" viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg" role="svg">
+<svg height="500" width="1000" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" role="svg">
     <rect x="0" y="0" height="300" width="1000" fill="#E7E7E7" />
     <g id="holes-top">
         <rect x="60" y="60" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
         <rect x="60" y="160" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="160" y="60" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="160" y="160" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="260" y="60" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="260" y="160" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="360" y="60" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
+        <rect x="360" y="160" height="80" width="80" fill="#666666" stroke="#333333" stroke-width="12" />
     </g>
 </svg>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // Style
 import canvasStyle from './Canvas.module.css';
@@ -14,6 +15,9 @@ import ElementContainer from '../ElementContainer/index';
 // Redux actions
 import { addElement, addDraftElement, setElementInfo, clearSelect, selectElement, setAnchorPoint, setEditorStatus, setTragetElement, moveElement } from '../../slices/editorSlice';
 import { zoomIn, zoomOut, setGridCenter } from '../../slices/editorSlice';
+
+// Antd Components
+import { Alert, Modal, Button } from 'antd';
 
 // Hooks
 import useElementAdder from '../../hooks/ElementAdder';
@@ -50,6 +54,8 @@ function Canvas(props) {
     const adder = useElementAdder();
 
     const viewbox = useCanvasViewbox(canvasHeight, canvasWidth);
+
+    const navigate = useNavigate();
 
     // 坐标系位置变化时执行
     useEffect(() => {
@@ -141,7 +147,7 @@ function Canvas(props) {
             case 'adding': {
                 const { x, y } = findNearestGridPoint(offsetX, offsetY);
                 // if (addResistor(x, y)) dispatch(setEditorStatus('default'));
-                if(adder(targetElement.type, x, y)) dispatch(setEditorStatus('default'));
+                if (adder(targetElement.type, x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
             case 'wiring': {

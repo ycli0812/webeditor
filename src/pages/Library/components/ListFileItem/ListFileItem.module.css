@@ -1,0 +1,22 @@
+/* list item */
+.design {
+    display: block;
+    cursor: pointer;
+    transition: 0.5s;
+    padding: 10px 20px;
+    border-bottom: solid 1px #EEEEEE;
+}
+
+.design:hover {
+    background-color: #EEEEEE;
+}
+
+/* tools */
+.tools {
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.tools:hover {
+    opacity: 1;
+}

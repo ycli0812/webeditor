@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Input, Space, message } from "antd";
 import { newDesign } from "../../../utils/Request";
 
-export function useCreateDesignModel() {
+function useCreateDesignModel() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputName, setInputName] = useState('');
@@ -15,7 +15,7 @@ export function useCreateDesignModel() {
         console.log('save');
         setLoading(true);
         console.log('new file:', inputName);
-        
+
         // setTimeout(() => {
         //     setLoading(false);
         //     setOpen(false);
@@ -49,12 +49,12 @@ export function useCreateDesignModel() {
                 title='Cerate new file'
                 keyboard={false}
                 confirmLoading={loading}
-                cancelButtonProps={{disabled: loading}}
+                cancelButtonProps={{ disabled: loading }}
                 onOk={handleOk}
                 onCancel={handleCancel}>
                 <Space direction='vertical'>
                     Please input the filename: (后台接口未完成)
-                    <Input addonAfter='.json' onChange={handleChange}/>
+                    <Input addonAfter='.json' onChange={handleChange} />
                 </Space>
             </Modal>
         );
@@ -66,3 +66,5 @@ export function useCreateDesignModel() {
 
     return [modal, showModal];
 }
+
+export { useCreateDesignModel };

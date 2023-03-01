@@ -101,7 +101,7 @@ function Navbar(props) {
         <div className={navbarStyle.navbar}>
             <img alt='' src={list} draggable={false} onClick={toLibrary}></img>
             <div className={navbarStyle.title}>
-                <span className={navbarStyle.folderName}>{filename === undefined ? '首页' : '我的设计'}/</span>
+                <span className={navbarStyle.folderName}>{filename === undefined ? 'Home' : 'My Designs'}/</span>
                 <span className={navbarStyle.fileName}>{filename === undefined ? '' : decodeURI(filename)}</span>
                 <span className={navbarStyle.fileName}>{modified ? '*' : ''}</span>
                 {quitConfirmModal}

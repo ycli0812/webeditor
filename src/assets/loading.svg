@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="500" width="500" viewBox="0 0 500 500">
+    <style>
+        .all {
+            animation: rotate 1.6s infinite linear;
+            transform-origin: center;
+        }
+
+        .icon {
+            stroke: #125cc4;
+            animation: loading 2s;
+            animation-iteration-count: infinite;
+            transform-origin: center;
+            transform: rotate(-90deg);
+            animation-timing-function: ease-in-out;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                stroke-dasharray: 1400 0;
+                stroke-dashoffset: 0;
+                /* stroke: #4285F4; */
+            }
+            50% {
+                stroke-dasharray: 0 1400;
+                stroke-dashoffset: 0;
+                /* stroke: #4285F4; */
+            }
+            /* 20.1% {
+                stroke: #4285F4;
+            } */
+            100% {
+                stroke-dasharray: 1400 0;
+                stroke-dashoffset: 1400;
+                /* stroke: #4285F4; */
+            }
+        }
+    </style>
+    <!-- <rect x="0" y="0" height="500" width="500" fill="#ffffff" /> -->
+    <g class="all">
+        <!-- <path d="M 250,50 A 200,200,0,0,1,450,250 " stroke-width="50" fill="none" />     -->
+        <circle class="icon" cx="250" cy="250" r="200" fill="none" stroke-width="50" />
+    </g>
+</svg>

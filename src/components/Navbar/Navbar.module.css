@@ -3,7 +3,7 @@
     border-bottom: solid 2px #EEEEEE;
     background-color: #FCFCFC;
     display: grid;
-    grid-template-columns: 1fr 10fr 59fr;
+    grid-template-columns: 50px 500px auto;
     align-items: center;
 }
 

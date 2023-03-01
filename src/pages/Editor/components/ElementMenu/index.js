@@ -9,17 +9,49 @@ import elementMenuStyle from './ElementMenu.module.css';
 import { generateTypeId } from '../../../../utils/IdGenerator';
 
 //Images
-import img_r from '../../../../assets/elementIcon/resistor.svg';
+import expend from '../../../../assets/expend.svg';
+import resistor_demo from '../../../../assets/elements/resistor.svg';
+import breadboard_demo from '../../../../assets/elements/breadboard1.svg';
 
 // Redux actions
 import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
 
-function ElementSample(props) {
+// Antd components
+import { Tooltip } from 'antd';
+
+// function ElementSample(props) {
+//     const {
+//         type,
+//         text,
+//         imgSrc,                     // 图片url
+//         features,
+//     } = props;
+
+//     const dispatch = useDispatch();
+//     const { elementSet } = useSelector(state => state.editor.circuit);
+
+//     function handleClick() {
+//         dispatch(setEditorStatus('adding'));
+//         dispatch(setTragetElement({
+//             id: generateTypeId(type, elementSet),
+//             type: type,
+//             features: features
+//         }));
+//     }
+
+//     return (
+//         <div className={elementMenuStyle.elementSample} onClick={handleClick}>
+//             <img src={imgSrc} alt=''></img>
+//             <div selectable="false">{text}</div>
+//         </div>
+//     );
+// }
+
+function ElementItem(props) {
     const {
         type,
         text,
         imgSrc,                     // 图片url
-        features,
     } = props;
 
     const dispatch = useDispatch();
@@ -29,15 +61,57 @@ function ElementSample(props) {
         dispatch(setEditorStatus('adding'));
         dispatch(setTragetElement({
             id: generateTypeId(type, elementSet),
-            type: type,
-            features: features
+            type: type
         }));
     }
 
     return (
-        <div className={elementMenuStyle.elementSample} onClick={handleClick}>
-            <img src={imgSrc} alt=''></img>
-            <div selectable="false">{text}</div>
+        <div className={elementMenuStyle.elementItem} onClick={handleClick}>
+            <img alt='' src={imgSrc} />
+            <Tooltip title={text} placement='right'>
+                <div>{text}</div>
+            </Tooltip>
+        </div>
+    );
+}
+
+function Collapse(props) {
+    const {
+        children
+    } = props;
+
+    // for(let i = 0; i < children.length(); i++) {
+    //     if(children[i].key === undefined) {}
+    // }
+
+    return (
+        <div className={elementMenuStyle.collapse}>
+            {children}
+        </div>
+    );
+}
+
+function Panel(props) {
+    const {
+        header,
+        onExpend,
+        key,
+        children
+    } = props;
+
+    const [active, setActive] = useState(false);
+
+    const handleClick = (ev) => {
+        setActive(!active);
+    };
+
+    return (
+        <div className={elementMenuStyle.panel} style={{borderBottom: active ? 'none' : 'inherit'}}>
+            <div className={elementMenuStyle.panelHeader} onClick={handleClick}>
+                <img alt='' src={expend} style={{ transform: `rotate(${active ? '0' : '-90'}deg)` }} />
+                <span>{header}</span>
+            </div>
+            {active ? <div className={elementMenuStyle.panelBody}>{children}</div> : null}
         </div>
     );
 }
@@ -48,9 +122,19 @@ function ElementMenu(props) {
 
     return (
         <div id={elementMenuStyle.elementMenu}>
-            {templates.map((item, index) => {
-                return <ElementSample key={index} imgSrc={img_r} type={item.type} text={item.text} features={item.defaultFeatures} />
-            })}
+            <Collapse>
+                <Panel header='Breadboard'>
+                    <div className={elementMenuStyle.groupList}>
+                        <ElementItem type='breadboard' text='Breadboard' imgSrc={breadboard_demo} />
+                    </div>
+                </Panel>
+                <Panel header='Basics'>
+                    <div className={elementMenuStyle.groupList}>
+                        <ElementItem type='resistor' text='Resistor' imgSrc={resistor_demo} />
+                        <ElementItem type='capacitor' text='Capacitor' imgSrc={resistor_demo} />
+                    </div>
+                </Panel>
+            </Collapse>
         </div>
     );
 }

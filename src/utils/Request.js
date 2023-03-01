@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
+// axios.defaults.timeout = 30000;
 
 function getDesignList() {
     const designList = axios.get(

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 
 // Style
@@ -19,9 +19,12 @@ import { getDesign } from '../../utils/Request';
 import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlice';
 
 // Antd components
-import { message, Modal } from 'antd';
+import { Alert, message, Modal, Button } from 'antd';
 
 // Hooks
+import useIndexedDB from '../../hooks/useIndexedDB';
+import useCircuitLoader from '../Library/hooks/useCircuitLoader';
+
 function useRequestElementList() {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -115,46 +118,108 @@ function useRequestElementList() {
 function Editor(props) {
     const navigateTo = useNavigate();
     const dispatch = useDispatch();
-    const { filename } = useParams();
+    // const { filename } = useParams();
+    const { filename, source, _id } = useLocation().state;
 
     const [msg, contextHolderMsg] = message.useMessage();
     const [modal, contextHolderModal] = Modal.useModal();
+    // const [db, dbConnected] = useIndexedDB();
+
+    const [circuit, circuitStatus] = useCircuitLoader({ filename, source, _id });
+
+    // init by querying DB and loading local file
     useEffect(() => {
-        dispatch(initEditor());
-        msg.open({
-            key: 'loadCircuit',
-            type: 'loading',
-            content: '加载中'
-        });
-        getDesign(filename).then((res) => {
-            console.log('load circuit', res);
-            dispatch(setCircuit(res.data));
-            msg.open({
-                key: 'loadCircuit',
-                type: 'success',
-                content: '加载完成',
-                duration: 2
-            });
-        }).catch((res) => {
-            console.error('Request circuit error', res);
-            msg.destroy();
-            modal.error({
-                title: 'Error',
-                content: 'Can not load the file. May be a bad Internet connection.',
-                onOk: (close) => {
-                    close();
-                    navigateTo(-1);
-                },
-                keyboard: false
-            });
-        });
+        switch (circuitStatus) {
+            case 'loading': {
+                dispatch(initEditor());
+                msg.open({
+                    key: 'loading_msg',
+                    type: 'loading',
+                    content: 'Loading'
+                });
+                break;
+            }
+            case 'success': {
+                msg.destroy();
+                dispatch(setCircuit(circuit));
+                break;
+            }
+            case 'denied': {
+                msg.destroy();
+                modal.error({
+                    title: 'Error',
+                    content: 'Can not load the circuit. Access to local file is denied.',
+                    onOk: (close) => {
+                        close();
+                        navigateTo(-1);
+                    },
+                    keyboard: false
+                });
+                break;
+            }
+            case 'not found': {
+                msg.destroy();
+                modal.error({
+                    title: 'Error',
+                    content: 'Can not load the circuit. The file may have been deleted or moved to somewhere else.',
+                    onOk: (close) => {
+                        close();
+                        navigateTo(-1);
+                    },
+                    keyboard: false
+                });
+                break;
+            }
+            case 'invalid file': {
+                msg.destroy();
+                modal.error({
+                    title: 'Error',
+                    content: 'Can not load the circuit. The file is not a circuit or it has broken.',
+                    onOk: (close) => {
+                        close();
+                        navigateTo(-1);
+                    },
+                    keyboard: false
+                });
+                break;
+            }
+            case 'request error': {
+                msg.destroy();
+                modal.error({
+                    title: 'Error',
+                    content: 'Can not load the circuit. Please try again later.',
+                    onOk: (close) => {
+                        close();
+                        navigateTo(-1);
+                    },
+                    keyboard: false
+                });
+                break;
+            }
+            default: {
+                msg.destroy();
+                break;
+            }
+        }
 
         return () => {
             dispatch(initEditor());
         };
-    }, []);
+    }, [circuitStatus]);
 
     useRequestElementList();
+
+    const errorModal = (
+        <Modal
+            title='Error'
+            open
+            closable={false}
+            maskClosable={false}
+            footer={<Button type='primary' onClick={() => navigateTo(-1)}>Ok</Button>}
+        >
+            <p>Sorry, we can not load this file. As The file can not be parsed into a circuit.</p>
+        </Modal>
+    );
 
     return (
         <div id={editorStyle.editor}>
@@ -163,10 +228,12 @@ function Editor(props) {
             </div>
             <div id={editorStyle.middle}>
                 <ToolBar />
-                <Canvas
-                    canvasWidth={window.innerWidth - 402}
-                    canvasHeight={window.innerHeight - 94}
-                />
+                <Alert.ErrorBoundary description={errorModal}>
+                    <Canvas
+                        canvasWidth={window.innerWidth - 402}
+                        canvasHeight={window.innerHeight - 94}
+                    />
+                </Alert.ErrorBoundary>
             </div>
             <div id={editorStyle.right}>
                 <Pannel />
