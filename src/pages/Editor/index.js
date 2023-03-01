@@ -26,6 +26,7 @@ import useIndexedDB from '../../hooks/useIndexedDB';
 import useCircuitLoader from '../Library/hooks/useCircuitLoader';
 
 function useRequestElementList() {
+    console.log('load templates');
     const dispatch = useDispatch();
     useEffect(() => {
         // TODO: send request
@@ -127,11 +128,15 @@ function Editor(props) {
 
     const [circuit, circuitStatus] = useCircuitLoader({ filename, source, _id });
 
+    // dispatch(initEditor());
+    useEffect(() => {
+        dispatch(initEditor());
+    }, []);
+
     // init by querying DB and loading local file
     useEffect(() => {
         switch (circuitStatus) {
             case 'loading': {
-                dispatch(initEditor());
                 msg.open({
                     key: 'loading_msg',
                     type: 'loading',
@@ -201,13 +206,7 @@ function Editor(props) {
                 break;
             }
         }
-
-        return () => {
-            dispatch(initEditor());
-        };
     }, [circuitStatus]);
-
-    useRequestElementList();
 
     const errorModal = (
         <Modal

@@ -20,7 +20,7 @@ const useFeatureValueGetter = (id) => {
         }
         const { features } = elementSet[usedId];
         for (let i in features) {
-            if (features[i].name == name) {
+            if (features[i].name === name) {
                 return features[i].value;
             }
         }
@@ -48,7 +48,7 @@ const useFeatureUnitGetter = (id) => {
         }
         const { features } = elementSet[usedId];
         for (let i in features) {
-            if (features[i].name == name) {
+            if (features[i].name === name) {
                 return features[i].unit;
             }
         }
@@ -64,7 +64,7 @@ const usePinPositionGetter = (id) => {
         }
         const { pins } = elementSet[usedId];
         for (let i in pins) {
-            if (pins[i].name == name) {
+            if (pins[i].name === name) {
                 return {
                     x: pins[i].x,
                     y: pins[i].y
