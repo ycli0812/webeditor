@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Style
@@ -21,17 +21,34 @@ import { setModified } from '../../slices/editorSlice';
 // Antd components
 import { message } from 'antd';
 
+// Hooks
+import useIndexedDB from '../../../../hooks/useIndexedDB';
+
 function ToolBar(props) {
     const dispatch = useDispatch();
-
-    const { circuit } = useSelector(state => state.editor);
-
-    const { filename } = useParams();
-
+    const { circuit, modified } = useSelector(state => state.editor);
     const [msg, contextHolder] = message.useMessage();
+    const { filename, source, _id } = useLocation().state;
+    const [handler, setHandler] = useState(null);
+    const [db, dbConnected] = useIndexedDB();
+
+    useEffect(() => {
+        if (dbConnected) {
+            const request = db
+                .transaction(['localFileHandlers'], 'readwrite')
+                .objectStore('localFileHandlers')
+                .get(_id);
+            request.onsuccess = (res) => {
+                const { name, lastEdit, handler } = res.target.result;
+                setHandler(handler);
+            };
+            request.onerror = (res) => {
+                console.log('can not get file handler');
+            }
+        }
+    }, [dbConnected]);
 
     function uploadCircuit(ev) {
-        console.log('upload circuit');
         msg.open({
             key: 'save',
             type: 'loading',
@@ -57,6 +74,45 @@ function ToolBar(props) {
         });
     }
 
+    async function saveLocalCircuit(ev) {
+        msg.open({
+            key: 'save',
+            type: 'loading',
+            content: '正在保存'
+        });
+        if (await handler.queryPermission({ mode: 'readwrite' }) !== 'granted') {
+            if (await handler.requestPermission({ mode: 'readwrite' }) !== 'granted') {
+                msg.open({
+                    key: 'save',
+                    type: 'error',
+                    content: '保存失败：无权限',
+                    duration: 1
+                });
+                return;
+            }
+        }
+        try {
+            const writer = await handler.createWritable();
+            await writer.write(JSON.stringify(circuit));
+            writer.close();
+            msg.open({
+                key: 'save',
+                type: 'success',
+                content: '保存成功',
+                duration: 1
+            });
+            dispatch(setModified(false));
+        } catch (e) {
+            console.log('error', e);
+            msg.open({
+                key: 'save',
+                type: 'error',
+                content: '保存失败：无法写入',
+                duration: 1
+            });
+        }
+    }
+
     function changePointer(ev) {
         dispatch(setEditorStatus('wiring'));
     }
@@ -67,7 +123,7 @@ function ToolBar(props) {
 
     return (
         <div className={toolbarStyle.toolbar}>
-            <button className={toolbarStyle.toolbarBtn} onClick={uploadCircuit}>
+            <button className={toolbarStyle.toolbarBtn} onClick={source === 'cloud' ? uploadCircuit : saveLocalCircuit}>
                 <img alt='' src={upload}></img>
             </button>
             <button className={toolbarStyle.toolbarBtn} onClick={normalPointer}>

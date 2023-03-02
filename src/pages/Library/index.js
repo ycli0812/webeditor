@@ -118,17 +118,28 @@ function Library(props) {
     const localListContent = lcoalFiles.map((item, index) => {
         const { _id, handler, name, lastEdit } = item;
 
-        const onClick = async (ev) => {
-            if (await handler.queryPermission() !== 'granted') {
-                if (await handler.requestPermission() !== 'granted') {
-                    return;
-                }
-            }
-            navigate('/editor', {
-                state: {
-                    source: 'local',
-                    filename: item.name,
-                    _id: item._id
+        const onClick = (ev) => {
+            // if (await handler.queryPermission() !== 'granted') {
+            //     if (await handler.requestPermission() !== 'granted') {
+            //         return;
+            //     }
+            // }
+            // navigate('/editor', {
+            //     state: {
+            //         source: 'local',
+            //         filename: item.name,
+            //         _id: item._id
+            //     }
+            // });
+            handler.requestPermission().then((res) => {
+                if (res === 'granted') {
+                    navigate('/editor', {
+                        state: {
+                            source: 'local',
+                            filename: item.name,
+                            _id: item._id
+                        }
+                    });
                 }
             });
         };

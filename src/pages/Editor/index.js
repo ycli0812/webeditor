@@ -12,9 +12,6 @@ import ElementMenu from './components/ElementMenu';
 import ToolBar from './components/ToolBar';
 import Pannel from './components/Pannel';
 
-// Utils
-import { getDesign } from '../../utils/Request';
-
 // Redux actions
 import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlice';
 
@@ -22,7 +19,6 @@ import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlic
 import { Alert, message, Modal, Button } from 'antd';
 
 // Hooks
-import useIndexedDB from '../../hooks/useIndexedDB';
 import useCircuitLoader from '../Library/hooks/useCircuitLoader';
 
 function useRequestElementList() {
@@ -119,20 +115,32 @@ function useRequestElementList() {
 function Editor(props) {
     const navigateTo = useNavigate();
     const dispatch = useDispatch();
-    // const { filename } = useParams();
     const { filename, source, _id } = useLocation().state;
 
     const [msg, contextHolderMsg] = message.useMessage();
     const [modal, contextHolderModal] = Modal.useModal();
-    // const [db, dbConnected] = useIndexedDB();
 
     const [circuit, circuitStatus] = useCircuitLoader({ filename, source, _id });
 
+    const { modified } = useSelector(state => state.editor);
+
     useEffect(() => {
-        dispatch(initEditor());
+        console.log('editor:', filename, source);
+        dispatch(initEditor(filename, source));
+        window.onbeforeunload = (ev) => {
+            ev.preventDefault();
+            ev.returnValue = '';
+        };
+        // window.onpopstate = (ev) => {
+        //     ev.preventDefault();
+        //     console.log('back');
+        //     alert('back');
+        // };
 
         return () => {
             dispatch(initEditor());
+            window.onbeforeunload = null;
+            window.onpopstate = null;
         }
     }, []);
 

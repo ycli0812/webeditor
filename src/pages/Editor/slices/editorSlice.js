@@ -4,6 +4,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { generateTypeId } from '../../../utils/IdGenerator';
 
 const initState = {
+    filename: '',
+    source: '',
     status: 'default',
     circuit: {},
     /* target and anchorPoint */
@@ -31,12 +33,17 @@ const slice = createSlice({
     initialState: initState,
     reducers: {
         initEditor: {
-            reducer: (state) => {
-                state = initState;
+            reducer: (state, action) => {
+                const { filename = '', source = '' } = action.payload;
+                state = JSON.parse(JSON.stringify(initState));
+                state.filename = filename;
+                state.source = source;
                 return state;
             },
-            prepare: () => {
-                return {};
+            prepare: (filename, source) => {
+                return {
+                    payload: { filename, source }
+                };
             }
         },
 
@@ -254,7 +261,7 @@ const slice = createSlice({
                 const deltaY = newGridY - target.y;
                 target.x = newGridX;
                 target.y = newGridY;
-                for(let i in target.pins) {
+                for (let i in target.pins) {
                     target.pins[i].x += deltaX;
                     target.pins[i].y += deltaY;
                 }

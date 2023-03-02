@@ -23,7 +23,6 @@ function App() {
 
   useEffect(() => {
     const userName = Cookies.get('user');
-    console.log('App effect');
     if(userName !== undefined) {
       dispatch(login(true));
     }
