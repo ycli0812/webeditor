@@ -16,7 +16,8 @@ import { saveDesign } from '../../utils/Request';
 import { setModified } from '../../pages/Editor/slices/editorSlice';
 
 // Antd components
-import { Button, Modal, Space, message } from 'antd';
+import { Button, Modal, Space, message, Breadcrumb } from 'antd';
+import { HomeOutlined, CloudOutlined, FolderOutlined } from '@ant-design/icons';
 
 // Hooks
 function useConfirmQuitModal() {
@@ -26,24 +27,8 @@ function useConfirmQuitModal() {
 
     const navigateTo = useNavigate();
 
-    const {circuit} = useSelector(state => state.editor);
+    const { circuit } = useSelector(state => state.editor);
     const filename = useLocation().pathname.split('/')[2];
-
-    const handleSave = (ev) => {
-        console.log('save');
-        setLoading(true);
-        
-        saveDesign(filename, circuit).then((res) => {
-            setLoading(false);
-            setOpen(false);
-            navigateTo('/library');
-        }).catch((res) => {
-            console.error('Save design error:', res);
-            setLoading(false);
-            setOpen(false);
-            message.error('Save failed.');
-        });
-    };
 
     const handleCancel = (ev) => {
         setOpen(false);
@@ -61,13 +46,12 @@ function useConfirmQuitModal() {
                 title='Warning'
                 footer={(
                     <Space>
-                        <Button key='submit' type='primary' onClick={handleSave} loading={loading}>Save</Button>
                         <Button key='nosave' type='primary' danger onClick={handleQuit} disabled={loading}>Quit anyway</Button>
                         <Button key='cancel' slot='back' onClick={handleCancel} disabled={loading}>Cancel</Button>
                     </Space>
                 )}
                 keyboard={false}>
-                File not saved yet, are you sure to quit?
+                The file is not saved yet, you will lost your modification if you quit now. Are you sure?
             </Modal>
         );
     }, [open, loading]);
@@ -83,8 +67,8 @@ function Navbar(props) {
     const dispatch = useDispatch();
     const navTo = useNavigate();
     // const { filename } = useParams();
-    const filename = useLocation().pathname.split('/')[2];
-    const { modified } = useSelector(state => state.editor);
+    const page = useLocation().pathname.split('/')[1];
+    const { modified, filename, source } = useSelector(state => state.editor);
 
     const [quitConfirmModal, showQuitConfirmModal] = useConfirmQuitModal();
 
@@ -99,13 +83,31 @@ function Navbar(props) {
 
     return (
         <div className={navbarStyle.navbar}>
-            <img alt='' src={list} draggable={false} onClick={toLibrary}></img>
+            {/* <img alt='' src={list} draggable={false} onClick={toLibrary}></img>
             <div className={navbarStyle.title}>
                 <span className={navbarStyle.folderName}>{filename === undefined ? 'Home' : 'My Designs'}/</span>
                 <span className={navbarStyle.fileName}>{filename === undefined ? '' : decodeURI(filename)}</span>
                 <span className={navbarStyle.fileName}>{modified ? '*' : ''}</span>
-                {quitConfirmModal}
-            </div>
+                
+            </div> */}
+            <Breadcrumb>
+                <Breadcrumb.Item onClick={toLibrary}>
+                    <HomeOutlined style={{cursor: 'pointer'}} />
+                </Breadcrumb.Item>
+                {page === 'library' ?
+                    <Breadcrumb.Item><span>Library</span></Breadcrumb.Item>
+                    : null}
+                {page === 'editor' ? [
+                    <Breadcrumb.Item>
+                        {source === 'cloud' ? [<CloudOutlined />, <span>Cloud</span>] : null}
+                        {source === 'local' ? [<FolderOutlined />, <span>Local</span>] : null}
+                    </Breadcrumb.Item>,
+                    <Breadcrumb.Item>
+                        <span>{filename + (modified ? '*' : '')}</span>
+                    </Breadcrumb.Item>
+                ] : null}
+            </Breadcrumb>
+            {quitConfirmModal}
         </div>
     );
 }

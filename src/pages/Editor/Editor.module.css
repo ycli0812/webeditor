@@ -7,10 +7,13 @@
 #left {
     background-color: #F7F7F7;
     border-right: solid 2px #EEEEEE;
+    /* display: grid; */
+    /* grid-template-rows: 20% auto; */
 }
 
 #middle {
-    
+    display: grid;
+    grid-template-rows: 42px auto 28px;
 }
 
 #right {

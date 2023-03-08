@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -62,6 +62,21 @@ function Canvas(props) {
         refreashClient();
         refreashCanvas();
     }, [zoom, gridX, gridY, circuit]);
+
+    const canvasRef = useRef(null);
+    useEffect(() => {
+        switch(status) {
+            case 'draggingComponent':
+            case 'draggingCanvas': { canvasRef.current.style.cursor = 'move'; break; }
+            case 'adding':
+            case 'wiring': { canvasRef.current.style.cursor = 'crosshair'; break; }
+            default: { canvasRef.current.style.cursor = 'default'; break; }
+        }
+
+        return () => {
+            document.body.style.cursor = 'default';
+        };
+    }, [status]);
 
     function refreashCanvas() {
         let cvs = document.getElementById(canvasStyle.realCanvas);
@@ -237,10 +252,11 @@ function Canvas(props) {
     }
 
     return (
-        <div id={canvasStyle.canvas} style={{ height: canvasHeight, width: canvasWidth }}>
+        <div id={canvasStyle.canvas} style={{ height: canvasHeight, width: '100%' }} ref={canvasRef}>
             <svg
                 id={canvasStyle.elementsContainer}
                 height={canvasHeight}
+                // height={canvasRef.current.clientWidth}
                 width={canvasWidth}
                 // viewBox={[-gridX, -gridY, canvasWidth, canvasHeight]}
                 viewBox={viewbox}

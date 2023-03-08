@@ -33,7 +33,7 @@ function ToolBar(props) {
     const [db, dbConnected] = useIndexedDB();
 
     useEffect(() => {
-        if (dbConnected) {
+        if (source === 'local' && dbConnected) {
             const request = db
                 .transaction(['localFileHandlers'], 'readwrite')
                 .objectStore('localFileHandlers')
@@ -94,7 +94,7 @@ function ToolBar(props) {
         try {
             const writer = await handler.createWritable();
             await writer.write(JSON.stringify(circuit));
-            writer.close();
+            await writer.close();
             msg.open({
                 key: 'save',
                 type: 'success',

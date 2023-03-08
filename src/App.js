@@ -26,9 +26,9 @@ function App() {
     if(userName !== undefined) {
       dispatch(login(true));
     }
-    document.oncontextmenu = (ev) => {
-      ev.preventDefault()
-    };
+    // document.oncontextmenu = (ev) => {
+    //   ev.preventDefault()
+    // };
   }, []);
 
   // useEffect(() => {

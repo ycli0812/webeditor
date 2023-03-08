@@ -3,8 +3,9 @@
     border-bottom: solid 2px #EEEEEE;
     background-color: #FCFCFC;
     display: grid;
-    grid-template-columns: 50px 500px auto;
+    grid-template-columns: auto auto;
     align-items: center;
+    padding: 0 20px;
 }
 
 .navbar img {

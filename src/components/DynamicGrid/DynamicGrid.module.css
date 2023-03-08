@@ -1,0 +1,27 @@
+
+.grids {
+    display: flex;
+    height: 700px;
+    background-color: #F7F7F7;
+}
+
+.handler {
+    background-color: #F7F7F7;
+    position: relative;
+}
+
+.handlerHover:hover {
+    background-color: #0090F1;
+}
+
+.grid {
+    width: 100%;
+    display: block;
+    width: fit-content;
+    overflow-y: scroll;
+    /* border-right: 1px solid red; */
+}
+
+.grid::-webkit-scrollbar {
+    display: none;
+}

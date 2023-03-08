@@ -7,6 +7,9 @@ import { generateTypeId } from '../../../utils/IdGenerator';
 // Reduc actions
 import { setTragetElement, applyDraftElement, setDraftInfo } from '../slices/editorSlice';
 
+// Antd components
+import { message } from 'antd';
+
 /**
  * This hook provides
  *
@@ -15,7 +18,7 @@ import { setTragetElement, applyDraftElement, setDraftInfo } from '../slices/edi
  */
 function useElementAdder(type) {
     const dispatch = useDispatch();
-    const { elementTemplates, circuit, target: { type: curType } } = useSelector(state => state.editor);
+    const { elementTemplates, circuit, target: { type: curType }, target } = useSelector(state => state.editor);
     const [countPoints, setCountPoints] = useState(0);
 
     // when type to add changes, reset adding progress
@@ -62,6 +65,12 @@ function useElementAdder(type) {
                 return false;
             }
             case 1: {
+                // check distance
+                const { x: preX, y: preY } = target.pins[0];
+                if (Math.sqrt((x - preX) * (x - preX) + (y - preY) * (y - preY)) < 3) {
+                    message.error('Too close!', 0.6);
+                    return false;
+                }
                 // setting end point
                 dispatch(setDraftInfo({
                     pins: [{ name: 'end', x, y }]
@@ -118,7 +127,7 @@ function useElementAdder(type) {
             y,
             features: [
                 { name: 'column', value: 15 },
-                { name: 'extended', value: true}
+                { name: 'extended', value: true }
             ]
         }));
         dispatch(applyDraftElement());

@@ -11,6 +11,9 @@ import Canvas from './components/Canvas';
 import ElementMenu from './components/ElementMenu';
 import ToolBar from './components/ToolBar';
 import Pannel from './components/Pannel';
+import StatusBar from './components/StatusBar';
+import ElementLookup from './components/ElementLookup';
+import DynamicGrid from '../../components/DynamicGrid';
 
 // Redux actions
 import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlice';
@@ -122,25 +125,28 @@ function Editor(props) {
 
     const [circuit, circuitStatus] = useCircuitLoader({ filename, source, _id });
 
-    const { modified } = useSelector(state => state.editor);
+    const { modified, circuit: realCircuit } = useSelector(state => state.editor);
 
     useEffect(() => {
-        console.log('editor:', filename, source);
+        // const cachedCircuit = window.sessionStorage.getItem('circuitCache');
+        // if(cachedCircuit !== null) {
+        //     dispatch(setCircuit(JSON.parse(cachedCircuit)));
+        // } else {
+        //     dispatch(initEditor(filename, source));
+        // }
         dispatch(initEditor(filename, source));
+
         window.onbeforeunload = (ev) => {
             ev.preventDefault();
             ev.returnValue = '';
+            // window.sessionStorage.setItem('circuitCache', JSON.stringify(realCircuit));
         };
-        // window.onpopstate = (ev) => {
-        //     ev.preventDefault();
-        //     console.log('back');
-        //     alert('back');
-        // };
 
         return () => {
             dispatch(initEditor());
             window.onbeforeunload = null;
             window.onpopstate = null;
+            window.sessionStorage.removeItem('circuitCache');
         }
     }, []);
 
@@ -221,6 +227,8 @@ function Editor(props) {
         }
     }, [circuitStatus]);
 
+    const leftLayout = useState([100, 8, 'auto']);
+
     const errorModal = (
         <Modal
             title='Error'
@@ -234,22 +242,52 @@ function Editor(props) {
     );
 
     return (
-        <div id={editorStyle.editor}>
-            <div id={editorStyle.left}>
-                <ElementMenu />
+        // <div id={editorStyle.editor} style={{ height: window.innerHeight - 52, width: '100%' }}>
+        //     <DynamicGrid direction='horizontal'>
+        //         <DynamicGrid direction='vertical'>
+        //             <ElementMenu />
+        //             {/* <div style={{height: 10, borderTop: '1px #AAAAAA solid'}}></div> */}
+        //             <ElementLookup />
+        //         </DynamicGrid>
+        //         <div>
+        //             <ToolBar />
+        //             <Alert.ErrorBoundary description={errorModal}>
+        //                 <Canvas
+        //                     canvasWidth={window.innerWidth - 200}
+        //                     canvasHeight={window.innerHeight - 94 - 28}
+        //                 />
+        //             </Alert.ErrorBoundary>
+        //             {/* <div style={{width: '100%', backgroundColor: '#F7F7F7', borderTop: '2px solid #EEEEEE'}}></div> */}
+        //             <StatusBar />
+        //         </div>
+        //         <div>
+        //             <Pannel />
+        //             {/* <div>status:{editorStatus}</div> */}
+        //             {contextHolderMsg}
+        //             {contextHolderModal}
+        //         </div>
+        //     </DynamicGrid>
+        // </div>
+
+        <div id={editorStyle.editor} style={{ height: window.innerHeight - 52, width: '100%' }}>
+            <div id={editorStyle.left} style={{ gridTemplateRows: '300px 8px auto' }}>
+                <DynamicGrid direction='vertical'>
+                    <ElementMenu />
+                    <ElementLookup />
+                </DynamicGrid>
             </div>
             <div id={editorStyle.middle}>
                 <ToolBar />
                 <Alert.ErrorBoundary description={errorModal}>
                     <Canvas
-                        canvasWidth={window.innerWidth - 402}
-                        canvasHeight={window.innerHeight - 94}
+                        canvasWidth={window.innerWidth - 400}
+                        canvasHeight={window.innerHeight - 94 - 28}
                     />
                 </Alert.ErrorBoundary>
+                <StatusBar />
             </div>
             <div id={editorStyle.right}>
                 <Pannel />
-                {/* <div>status:{editorStatus}</div> */}
             </div>
             {contextHolderMsg}
             {contextHolderModal}

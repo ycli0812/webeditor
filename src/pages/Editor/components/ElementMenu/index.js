@@ -105,13 +105,21 @@ function Panel(props) {
         setActive(!active);
     };
 
+    // console.log(children);
+
+    let panelHeight = 97;
+    if(children.props.children.length != undefined) {
+        panelHeight = Math.ceil(children.props.children.length / 2) * 97;
+    }
+
     return (
         <div className={elementMenuStyle.panel} style={{borderBottom: active ? 'none' : 'inherit'}}>
             <div className={elementMenuStyle.panelHeader} onClick={handleClick}>
                 <img alt='' src={expend} style={{ transform: `rotate(${active ? '0' : '-90'}deg)` }} />
                 <span>{header}</span>
             </div>
-            {active ? <div className={elementMenuStyle.panelBody}>{children}</div> : null}
+            {/* {active ? <div className={elementMenuStyle.panelBody}>{children}</div> : null} */}
+            <div className={elementMenuStyle.panelBody} style={{height: active ? panelHeight : 0}}>{children}</div>
         </div>
     );
 }

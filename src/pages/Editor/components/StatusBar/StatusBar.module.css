@@ -1,0 +1,16 @@
+.body {
+    height: 26px;
+    width: auto;
+    background-color: #F7F7F7;
+    border-top: 2px solid #EEEEEE;
+    padding: 0 10px;
+    line-height: 26px;
+    font-size: 13px;
+    color: #666666;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family: 'Times New Roman', Times, serif; */
+}
+
+.body span {
+    height: 100%;
+}
