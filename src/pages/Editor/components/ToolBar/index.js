@@ -14,9 +14,10 @@ import upload from '../../../../assets/upload.svg';
 // Utils
 import { saveDesign } from '../../../../utils/Request';
 import { setEditorStatus } from '../../slices/editorSlice';
+import { generateTypeId } from '../../../../utils/IdGenerator';
 
 // Redux actions
-import { setModified } from '../../slices/editorSlice';
+import { setModified, setTragetElement } from '../../slices/editorSlice';
 
 // Antd components
 import { message } from 'antd';
@@ -26,7 +27,7 @@ import useIndexedDB from '../../../../hooks/useIndexedDB';
 
 function ToolBar(props) {
     const dispatch = useDispatch();
-    const { circuit, modified } = useSelector(state => state.editor);
+    const { circuit, modified, circuit: { elementSet } } = useSelector(state => state.editor);
     const [msg, contextHolder] = message.useMessage();
     const { filename, source, _id } = useLocation().state;
     const [handler, setHandler] = useState(null);
@@ -114,7 +115,12 @@ function ToolBar(props) {
     }
 
     function changePointer(ev) {
-        dispatch(setEditorStatus('wiring'));
+        // dispatch(setEditorStatus('wiring'));
+        dispatch(setEditorStatus('adding'));
+        dispatch(setTragetElement({
+            id: generateTypeId('wire', elementSet),
+            type: 'wire'
+        }));
     }
 
     function normalPointer(ev) {

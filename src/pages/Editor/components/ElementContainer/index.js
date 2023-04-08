@@ -12,6 +12,7 @@ import { useFeatureValueGetter, useFeatureUnitGetter, usePinPositionGetter } fro
 import Resistor from './Resistor';
 import Breadboard from './Breadboard';
 import Wire from './Wire';
+import Switch from './Switch';
 
 function ElementContainer(props) {
     const {
@@ -62,6 +63,10 @@ function ElementContainer(props) {
             }
             case 'wire': {
                 elementList.push(<Wire key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />)
+                break;
+            }
+            case 'switch': {
+                elementList.push(<Switch key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
                 break;
             }
             default: break;           

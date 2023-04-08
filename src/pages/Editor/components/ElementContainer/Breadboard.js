@@ -22,20 +22,20 @@ function Breadboard(props) {
 
     // base board
     const board = (
-        <rect x='0' y={extended ? 0 : 300} height={extended ? 18 * 100 : 12 * 100} width={(cols + 1) * 100} fill='#D9D9D9' />
+        <rect x='0' y={extended ? 0 : 300} height={extended ? 18 * 100 : 12 * 100} width={(cols + 1) * 100} fill='#EAEAEA' />
     );
     
     // holes
     const holes = [];
     const getHole = (col, row) => {
-        const holeSize = 40;
+        const holeSize = 60;
         let x = (col + 1) * 100 - holeSize / 2;
         let y = (row + 1) * 100 - holeSize / 2;
         if(row >= 2) y += 100;
         if(row >= 7) y += 100;
         if(row >= 12) y += 100;
         return (
-            <rect key={row * cols + col} x={x} y={y} height={holeSize} width={holeSize} fill='#666666' stroke='#AAAAAA' strokeWidth={8} />
+            <rect key={row * cols + col} x={x} y={y} height={holeSize} width={holeSize} fill='#444444' stroke='#E4E4E4' strokeWidth={26} />
         );
     };
     for(let i = (extended ? 0 : 2); i < (extended ? 14 : 12); i++) {

@@ -1,0 +1,77 @@
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    height: 42px;
+    line-height: 26px;
+    font-size: 13px;
+    color: #666666;
+    padding: 0 10px;
+    border-bottom: solid 1px #EEEEEE;
+    display: flex;
+    align-items: center;
+}
+
+.list {
+    overflow-y: scroll;
+    flex: 1;
+}
+
+.icon {
+    height: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.outText {
+    font-family: 'Consolas';
+    font-size: 13px;
+    line-height: 14px;
+}
+
+.outText::selection {
+    background-color: #AAAAAA;
+    color: #FFFFFF;
+}
+
+.info {
+    padding: 5px;
+    display: grid;
+    grid-template-columns: 20px auto;
+    column-gap: 5px;
+    /* font-weight: bold; */
+    /* margin-top: 1px; */
+}
+
+.normalInfo {
+    border-bottom: solid 1px #F0F0F0;
+    border-top: solid 1px #F0F0F0;
+    background-color: #FFFFFF;
+    color: #333333;
+}
+
+.warningInfo {
+    border-bottom: solid 1px #ffe357;
+    border-top: solid 1px #ffe357;
+    background-color: #FFFBE6;
+    color: #c48d28;
+}
+
+.errorInfo {
+    border-bottom: solid 1px rgba(255, 0, 0, 0.2);
+    border-top: solid 1px rgba(255, 0, 0, 0.2);
+    background-color: rgba(255, 0, 0, 0.05);
+    color: #FF0000;
+}
+
+.successInfo {
+    border-bottom: solid 1px rgba(11, 130, 53, 0.2);
+    border-top: solid 1px rgba(11, 130, 53, 0.2);
+    background-color: rgba(11, 130, 53, 0.05);
+    color: #0B8235;
+}

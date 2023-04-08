@@ -48,9 +48,7 @@ function Canvas(props) {
     const { circuit, status, target: targetElement, anchorPoint } = useSelector(state => state.editor);
 
     // Elements adder
-    const addResistor = useElementAdder('resistor');
     const addWire = useElementAdder('wire');
-    const addBreadboard = useElementAdder('breadboard');
     const adder = useElementAdder();
 
     const viewbox = useCanvasViewbox(canvasHeight, canvasWidth);
@@ -61,7 +59,7 @@ function Canvas(props) {
     useEffect(() => {
         refreashClient();
         refreashCanvas();
-    }, [zoom, gridX, gridY, circuit]);
+    }, [zoom, gridX, gridY, circuit, canvasHeight, canvasWidth]);
 
     const canvasRef = useRef(null);
     useEffect(() => {
@@ -165,11 +163,11 @@ function Canvas(props) {
                 if (adder(targetElement.type, x, y)) dispatch(setEditorStatus('default'));
                 break;
             }
-            case 'wiring': {
-                const { x, y } = findNearestGridPoint(offsetX, offsetY);
-                if (addWire(x, y)) dispatch(setEditorStatus('default'));
-                break;
-            }
+            // case 'wiring': {
+            //     const { x, y } = findNearestGridPoint(offsetX, offsetY);
+            //     if (addWire(x, y)) dispatch(setEditorStatus('default'));
+            //     break;
+            // }
             default: break;
         }
     }

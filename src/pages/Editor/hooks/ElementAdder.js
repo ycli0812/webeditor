@@ -135,11 +135,24 @@ function useElementAdder(type) {
         return true;
     };
 
+    const switchAdder = (x, y) => {
+        initDraft('switch');
+        dispatch(setDraftInfo({
+            x,
+            y,
+            features: []
+        }));
+        dispatch(applyDraftElement());
+        clearCount();
+        return true;
+    };
+
     const generalAdder = (type, x, y) => {
         switch (type) {
             case 'resistor': return resistorAdder(x, y);
             case 'wire': return wireAdder(x, y);
             case 'breadboard': return breadboardAdder(x, y);
+            case 'switch': return switchAdder(x, y);
             default: return false;
         }
     };
@@ -148,6 +161,7 @@ function useElementAdder(type) {
         case 'resistor': return resistorAdder;
         case 'wire': return wireAdder;
         case 'breadboard': return breadboardAdder;
+        case 'switch': return switchAdder;
         default: return generalAdder;
     }
 }

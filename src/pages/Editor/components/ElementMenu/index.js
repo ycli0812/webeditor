@@ -12,6 +12,7 @@ import { generateTypeId } from '../../../../utils/IdGenerator';
 import expend from '../../../../assets/expend.svg';
 import resistor_demo from '../../../../assets/elements/resistor.svg';
 import breadboard_demo from '../../../../assets/elements/breadboard1.svg';
+import switch_demo from '../../../../assets/elements/switch.svg';
 
 // Redux actions
 import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
@@ -140,6 +141,7 @@ function ElementMenu(props) {
                     <div className={elementMenuStyle.groupList}>
                         <ElementItem type='resistor' text='Resistor' imgSrc={resistor_demo} />
                         <ElementItem type='capacitor' text='Capacitor' imgSrc={resistor_demo} />
+                        <ElementItem type='switch' text='Micro Switch' imgSrc={switch_demo} />
                     </div>
                 </Panel>
             </Collapse>

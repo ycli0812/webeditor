@@ -13,7 +13,8 @@ import ToolBar from './components/ToolBar';
 import Pannel from './components/Pannel';
 import StatusBar from './components/StatusBar';
 import ElementLookup from './components/ElementLookup';
-import DynamicGrid from '../../components/DynamicGrid';
+import DynamicGrid from '../../components/DynamicGrid/index.tsx';
+import OutputBar from './components/Verifier/index.tsx';
 
 // Redux actions
 import { setCircuit, initEditor, setElementTemplates } from './slices/editorSlice';
@@ -25,7 +26,6 @@ import { Alert, message, Modal, Button } from 'antd';
 import useCircuitLoader from '../Library/hooks/useCircuitLoader';
 
 function useRequestElementList() {
-    console.log('load templates');
     const dispatch = useDispatch();
     useEffect(() => {
         // TODO: send request
@@ -127,19 +127,15 @@ function Editor(props) {
 
     const { modified, circuit: realCircuit } = useSelector(state => state.editor);
 
+    const [canvasHeight, setCanvasHeight] = useState((window.innerHeight - 94 - 28) / 2);
+    const [canvasWidth, setCanvasWidth] = useState(window.innerWidth - 400);
+
     useEffect(() => {
-        // const cachedCircuit = window.sessionStorage.getItem('circuitCache');
-        // if(cachedCircuit !== null) {
-        //     dispatch(setCircuit(JSON.parse(cachedCircuit)));
-        // } else {
-        //     dispatch(initEditor(filename, source));
-        // }
         dispatch(initEditor(filename, source));
 
         window.onbeforeunload = (ev) => {
             ev.preventDefault();
             ev.returnValue = '';
-            // window.sessionStorage.setItem('circuitCache', JSON.stringify(realCircuit));
         };
 
         return () => {
@@ -278,12 +274,12 @@ function Editor(props) {
             </div>
             <div id={editorStyle.middle}>
                 <ToolBar />
-                <Alert.ErrorBoundary description={errorModal}>
-                    <Canvas
-                        canvasWidth={window.innerWidth - 400}
-                        canvasHeight={window.innerHeight - 94 - 28}
-                    />
-                </Alert.ErrorBoundary>
+                <DynamicGrid direction='vertical' onChange={(layout) => {setCanvasHeight(layout[0])}}>
+                    <Alert.ErrorBoundary description={errorModal}>
+                        <Canvas canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
+                    </Alert.ErrorBoundary>
+                    <OutputBar />
+                </DynamicGrid>
                 <StatusBar />
             </div>
             <div id={editorStyle.right}>

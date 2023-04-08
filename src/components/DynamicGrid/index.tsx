@@ -1,5 +1,6 @@
-import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef, ReactNode } from 'react';
 import ReactDOM from 'react-dom/client';
+import { DynamicGridProps } from './DynamicGrid';
 
 // Style
 import dynamicGridStyle from './DynamicGrid.module.css';
@@ -7,7 +8,7 @@ import dynamicGridStyle from './DynamicGrid.module.css';
 // Constant
 const handlerSpace = 2;
 
-function SlideHandler(props) {
+function SlideHandler(props: any) {
     const {
         onMouseDown,
         direction,
@@ -15,11 +16,11 @@ function SlideHandler(props) {
     } = props;
 
     useEffect(() => {
-        if(sliding) {
-            if(direction === 'vertical') {
+        if (sliding) {
+            if (direction === 'vertical') {
                 document.body.style.cursor = 'ns-resize';
             }
-            if(direction === 'horizontal') {
+            if (direction === 'horizontal') {
                 document.body.style.cursor = 'ew-resize';
             }
         } else {
@@ -34,7 +35,7 @@ function SlideHandler(props) {
         zIndex: 'calc(inherit + 10)'
     };
 
-    const decorStyle = {
+    const decorStyle: React.CSSProperties = {
         height: direction === 'vertical' ? 4 : '100%',
         width: direction === 'horizontal' ? 4 : '100%',
         position: 'absolute',
@@ -60,7 +61,7 @@ function SlideHandler(props) {
     );
 }
 
-function Grid(props) {
+function Grid(props: any) {
     const {
         children,
         direction,
@@ -84,42 +85,43 @@ function Grid(props) {
     );
 }
 
-function DynamicGrid(props) {
+function DynamicGrid(props: DynamicGridProps) {
     const {
-        direction,
-        template,
+        direction = 'vertical',
+        cells = null,
+        style = {},
         children,
-        style
+        onChange = (layout: number[]) => { }
     } = props;
 
-    const [countChild, setCountChild] = useState(children.length === undefined ? 1 : children.length);
-    const [layout, setLayout] = useState(new Array(countChild));
-    const [avaliableSpace, setAvaliableSpace] = useState(0);
-    const [sliding, setSliding] = useState(-1);
-    // const [startX, setStartX] = useState(-1);
-    // const [startY, setStartY] = useState(-1);
+    const [countChild, setCountChild] = useState<number>(children.length === undefined ? 1 : children.length);
+    const [layout, setLayout] = useState<number[]>(new Array(countChild));
+    const [avaliableSpace, setAvaliableSpace] = useState<number>(0);
+    const [sliding, setSliding] = useState<number>(-1);
+    const [initSpacePre, setInitSpacePre] = useState<number>(0);
+    const [initSpaceNxt, setInitSpaceNxt] = useState<number>(0);
+    const [mouseDownPos, setMouseDownPos] = useState<number>(0);
 
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // const { x, y } = containerRef.current.getBoundingClientRect();
-        const totalSpace = direction === 'vertical' ? containerRef.current.clientHeight : containerRef.current.clientWidth;
+        const totalSpace: any | number = direction === 'vertical' ? containerRef.current?.clientHeight : containerRef.current?.clientWidth;
         setAvaliableSpace(totalSpace - (countChild - 1) * handlerSpace);
-        // setStartX(x + window.scrollX);
-        // setStartY(y + window.scrollY);
     }, []);
 
     useEffect(() => {
-        const newLayout = [];
+        const newLayout: number[] = [];
         for (let i = 0; i < countChild; i++) {
             newLayout.push(avaliableSpace / countChild);
         }
         setLayout(newLayout);
     }, [avaliableSpace]);
 
-    const content = [];
+    const content: React.ReactNode[] = [];
+    // TODO if cells property is provided, ignore children, else use cells as grids
+    
     if (children.length !== undefined) {
-        children.forEach((item, index) => {
+        children.forEach((item: React.ReactNode, index: number) => {
             content.push(
                 <Grid key={index} direction={direction} space={layout[index]}>{item}</Grid>
             );
@@ -127,7 +129,7 @@ function DynamicGrid(props) {
                 content.push(
                     <SlideHandler
                         direction={direction}
-                        onMouseDown={(ev) => handleMouseDown(ev, index)}
+                        onMouseDown={(ev: React.MouseEvent) => handleMouseDown(ev, index)}
                         key={'handler' + index}
                         sliding={sliding === index}
                     />
@@ -140,40 +142,43 @@ function DynamicGrid(props) {
         );
     }
 
-    function handleMouseMove(ev) {
-        const newLayout = [...layout];
+    function handleMouseMove(ev: React.MouseEvent) {
         if (sliding !== -1) {
-            const { movementX, movementY } = ev;
+            const newLayout = [...layout];
+            const { clientX, clientY } = ev;
             if (direction === 'vertical') {
-                newLayout[sliding] += movementY;
-                newLayout[sliding + 1] -= movementY;
-                if (newLayout[sliding] >= 200 && newLayout[sliding + 1] >= 200) setLayout(newLayout);
-                return;
+                newLayout[sliding] = (initSpacePre + (clientY + window.scrollY - mouseDownPos));
+                newLayout[sliding + 1] = (initSpaceNxt - (clientY + window.scrollY - mouseDownPos));
+                if (newLayout[sliding] >= 20 && newLayout[sliding + 1] >= 20) setLayout(newLayout);
             }
             if (direction === 'horizontal') {
-                newLayout[sliding] += movementX;
-                newLayout[sliding + 1] -= movementX;
-                if (newLayout[sliding] >= 200 && newLayout[sliding + 1] >= 200) setLayout(newLayout);
-                return;
+                newLayout[sliding] = (initSpacePre + (clientX + window.scrollX - mouseDownPos));
+                newLayout[sliding + 1] = (initSpaceNxt - (clientX + window.scrollX - mouseDownPos));
+                if (newLayout[sliding] >= 20 && newLayout[sliding + 1] >= 20) setLayout(newLayout);
             }
+            onChange(newLayout);
         }
     }
 
-    function handleMouseDown(ev, index) {
+    function handleMouseDown(ev: React.MouseEvent, index: number) {
         ev.preventDefault();
-        console.log('mouse down on handler after grid', index, ev);
+        const { clientX, clientY } = ev;
+        if (direction === 'vertical') {
+            setMouseDownPos(clientY + window.scrollY);
+        } else {
+            setMouseDownPos(clientX + window.scrollX);
+        }
+        setInitSpacePre(layout[index]);
+        setInitSpaceNxt(layout[index + 1]);
         setSliding(index);
     }
 
-    function clearSliding(ev) {
-        console.log('clear sliding')
+    function clearSliding(ev: React.MouseEvent) {
         setSliding(-1);
     }
 
-    const displayStyle = {
+    const displayStyle: React.CSSProperties = {
         flexDirection: direction === 'vertical' ? 'column' : 'row',
-        height: '100%',
-        width: '100%'
     };
 
     return (
@@ -183,7 +188,7 @@ function DynamicGrid(props) {
             onMouseMove={handleMouseMove}
             onMouseUp={clearSliding}
             onMouseLeave={clearSliding}
-            style={displayStyle}
+            style={{ ...style, ...displayStyle }}
         >
             {content}
         </div>
