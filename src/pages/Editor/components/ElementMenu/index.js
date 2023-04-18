@@ -13,40 +13,14 @@ import expend from '../../../../assets/expend.svg';
 import resistor_demo from '../../../../assets/elements/resistor.svg';
 import breadboard_demo from '../../../../assets/elements/breadboard1.svg';
 import switch_demo from '../../../../assets/elements/switch.svg';
+import capacitor_demo from '../../../../assets/elements/capacitor.svg';
+import led_demo from '../../../../assets/elements/LED.svg'
 
 // Redux actions
 import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
 
 // Antd components
 import { Tooltip } from 'antd';
-
-// function ElementSample(props) {
-//     const {
-//         type,
-//         text,
-//         imgSrc,                     // 图片url
-//         features,
-//     } = props;
-
-//     const dispatch = useDispatch();
-//     const { elementSet } = useSelector(state => state.editor.circuit);
-
-//     function handleClick() {
-//         dispatch(setEditorStatus('adding'));
-//         dispatch(setTragetElement({
-//             id: generateTypeId(type, elementSet),
-//             type: type,
-//             features: features
-//         }));
-//     }
-
-//     return (
-//         <div className={elementMenuStyle.elementSample} onClick={handleClick}>
-//             <img src={imgSrc} alt=''></img>
-//             <div selectable="false">{text}</div>
-//         </div>
-//     );
-// }
 
 function ElementItem(props) {
     const {
@@ -69,7 +43,7 @@ function ElementItem(props) {
     return (
         <div className={elementMenuStyle.elementItem} onClick={handleClick}>
             <img alt='' src={imgSrc} />
-            <Tooltip title={text} placement='right'>
+            <Tooltip title={text} placement='right' mouseEnterDelay={0} mouseLeaveDelay={0}>
                 <div>{text}</div>
             </Tooltip>
         </div>
@@ -140,8 +114,9 @@ function ElementMenu(props) {
                 <Panel header='Basics'>
                     <div className={elementMenuStyle.groupList}>
                         <ElementItem type='resistor' text='Resistor' imgSrc={resistor_demo} />
-                        <ElementItem type='capacitor' text='Capacitor' imgSrc={resistor_demo} />
+                        <ElementItem type='capacitor' text='Capacitor' imgSrc={capacitor_demo} />
                         <ElementItem type='switch' text='Micro Switch' imgSrc={switch_demo} />
+                        <ElementItem type='led' text='LED' imgSrc={led_demo} />
                     </div>
                 </Panel>
             </Collapse>

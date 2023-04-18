@@ -4,14 +4,6 @@
     position: relative;
 }
 
-.listCol {
-    margin: auto 30px;
-    display: grid;
-    grid-template-rows: auto auto;
-    align-items: center;
-    row-gap: 30px;
-}
-
 /* list header */
 .title {
     height: 70px;

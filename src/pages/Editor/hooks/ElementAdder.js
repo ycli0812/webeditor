@@ -11,12 +11,11 @@ import { setTragetElement, applyDraftElement, setDraftInfo } from '../slices/edi
 import { message } from 'antd';
 
 /**
- * This hook provides
+ * This hook generates an element adder.
  *
- * @param {*} type
  * @return {*} 
  */
-function useElementAdder(type) {
+function useElementAdder() {
     const dispatch = useDispatch();
     const { elementTemplates, circuit, target: { type: curType }, target } = useSelector(state => state.editor);
     const [countPoints, setCountPoints] = useState(0);
@@ -79,6 +78,64 @@ function useElementAdder(type) {
                 // add draft element to circuit
                 dispatch(applyDraftElement());
                 console.log('resistor point 2');
+                return true;
+            }
+            default: break;
+        }
+    };
+
+    const capacitorAdder = (x, y) => {
+        switch (countPoints) {
+            case 0: {
+                // setting start point and position (x and y)
+                initDraft('capacitor');
+                dispatch(setDraftInfo({
+                    x,
+                    y,
+                    pins: [{ name: 'start', x, y }]
+                }));
+                incCount();
+                console.log('capacitor point 1');
+                return false;
+            }
+            case 1: {
+                // setting end point
+                dispatch(setDraftInfo({
+                    pins: [{ name: 'end', x, y }]
+                }));
+                clearCount();
+                // add draft element to circuit
+                dispatch(applyDraftElement());
+                console.log('capacitor point 2');
+                return true;
+            }
+            default: break;
+        }
+    };
+
+    const ledAdder = (x, y) => {
+        switch (countPoints) {
+            case 0: {
+                // setting start point and position (x and y)
+                initDraft('led');
+                dispatch(setDraftInfo({
+                    x,
+                    y,
+                    pins: [{ name: 'positive', x, y }]
+                }));
+                incCount();
+                console.log('LED point 1');
+                return false;
+            }
+            case 1: {
+                // setting end point
+                dispatch(setDraftInfo({
+                    pins: [{ name: 'negative', x, y }]
+                }));
+                clearCount();
+                // add draft element to circuit
+                dispatch(applyDraftElement());
+                console.log('LED point 2');
                 return true;
             }
             default: break;
@@ -153,17 +210,20 @@ function useElementAdder(type) {
             case 'wire': return wireAdder(x, y);
             case 'breadboard': return breadboardAdder(x, y);
             case 'switch': return switchAdder(x, y);
+            case 'capacitor': return capacitorAdder(x, y);
+            case 'led': return ledAdder(x, y);
             default: return false;
         }
     };
 
-    switch (type) {
-        case 'resistor': return resistorAdder;
-        case 'wire': return wireAdder;
-        case 'breadboard': return breadboardAdder;
-        case 'switch': return switchAdder;
-        default: return generalAdder;
-    }
+    // switch (type) {
+    //     case 'resistor': return resistorAdder;
+    //     case 'wire': return wireAdder;
+    //     case 'breadboard': return breadboardAdder;
+    //     case 'switch': return switchAdder;
+    //     default: return generalAdder;
+    // }
+    return generalAdder;
 }
 
 export default useElementAdder;

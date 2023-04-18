@@ -61,7 +61,7 @@ function ListError(props) {
 function Library(props) {
     const navigate = useNavigate();
 
-    const [designList, designListStatus] = useDesignList();
+    // const [designList, designListStatus] = useDesignList();
 
     const [modal, showModal] = useCreateDesignModel();
 
@@ -95,42 +95,30 @@ function Library(props) {
     }, [dbLoaded]);
 
     // Cloud
-    const listLoading = <Loading />;
-    const listError = <ListError text='Sorry. We can not load your files now.' reloader={() => { window.location.reload() }} />;
-    const cloudListHeader = <ListHeader header='Cloud' icon={cloud} />;
-    const cloudListFooter = [<Button shape='round' icon={<CloudOutlined />} type='primary' disabled={designListStatus != 'success'} onClick={addDesign}>New File</Button>];
+    // const listLoading = <Loading />;
+    // const listError = <ListError text='Sorry. We can not load your files now.' reloader={() => { window.location.reload() }} />;
+    // const cloudListHeader = <ListHeader header='Cloud' icon={cloud} />;
+    // const cloudListFooter = [<Button shape='round' icon={<CloudOutlined />} type='primary' disabled={designListStatus != 'success'} onClick={addDesign}>New File</Button>];
 
-    const cloudListContent = designList.map((item, index) => {
-        const handleClick = async (ev) => {
-            navigate('/editor', {
-                state: {
-                    source: 'cloud',
-                    filename: item.filename
-                }
-            });
-        };
-        return (
-            <ListFileItem key={index} fileName={item.filename} editTime={item.lastEdit} onClick={handleClick} />
-        );
-    });
+    // const cloudListContent = designList.map((item, index) => {
+    //     const handleClick = async (ev) => {
+    //         navigate('/editor', {
+    //             state: {
+    //                 source: 'cloud',
+    //                 filename: item.filename
+    //             }
+    //         });
+    //     };
+    //     return (
+    //         <ListFileItem key={index} fileName={item.filename} editTime={item.lastEdit} onClick={handleClick} />
+    //     );
+    // });
 
     // Local
     const localListContent = lcoalFiles.map((item, index) => {
         const { _id, handler, name, lastEdit } = item;
 
         const onClick = (ev) => {
-            // if (await handler.queryPermission() !== 'granted') {
-            //     if (await handler.requestPermission() !== 'granted') {
-            //         return;
-            //     }
-            // }
-            // navigate('/editor', {
-            //     state: {
-            //         source: 'local',
-            //         filename: item.name,
-            //         _id: item._id
-            //     }
-            // });
             handler.requestPermission().then((res) => {
                 if (res === 'granted') {
                     navigate('/editor', {
@@ -226,15 +214,15 @@ function Library(props) {
     return (
         <div className={libraryStyle.library} style={{ height: window.innerHeight - 52 }}>
             <Row justify='start' style={{ height: '100%' }}>
-                <Col span={8} className={libraryStyle.listCol}>
-                    <Card type='inner' title={cloudListHeader} actions={cloudListFooter} size='small' style={cardStyle} bodyStyle={cardBodyStyle((window.innerHeight - 402) / 2)}>
+                <Col span={8} style={{margin: 'auto 30px'}}>
+                    {/* <Card type='inner' title={cloudListHeader} actions={cloudListFooter} size='small' style={cardStyle} bodyStyle={cardBodyStyle((window.innerHeight - 402) / 2)}>
                         <div className={libraryStyle.listScroller}>
                             {designListStatus === 'fail' ? listError : null}
                             {designListStatus === 'success' ? cloudListContent : null}
                             {designListStatus === 'loading' ? listLoading : null}
                         </div>
-                    </Card>
-                    <Card type='inner' title={localListHeader} actions={localActions} size='small' style={cardStyle} bodyStyle={cardBodyStyle((window.innerHeight - 402) / 2)}>
+                    </Card> */}
+                    <Card type='inner' title={localListHeader} actions={localActions} size='small' style={cardStyle} bodyStyle={cardBodyStyle((window.innerHeight - 242))}>
                         <div className={libraryStyle.listScroller}>
                             {localListContent}
                         </div>
@@ -242,8 +230,12 @@ function Library(props) {
                 </Col>
                 <Col flex='auto' style={{ margin: 'auto 30px auto 0' }}>
                     <Card type='inner' title={pinListHeader} size='small' style={cardStyle} bodyStyle={cardBodyStyle((window.innerHeight - 186))}>
-                        <div className={libraryStyle.listScroller}>
-                            <Empty style={{ marginTop: 200 }} />
+                        <div className={libraryStyle.listScroller} 
+                            onDrop={(ev) => {
+                                console.log('drop', ev)
+                            }}
+                            onDragOver={(ev) => {ev.preventDefault();}}>
+                            {/* <Empty style={{ marginTop: 200 }} /> */}
                         </div>
                     </Card>
                 </Col>

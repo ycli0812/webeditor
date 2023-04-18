@@ -81,6 +81,18 @@ function useRequestElementList() {
                         value: 1,
                         unit: 'f'
                     }
+                ],
+                pins: [
+                    {
+                        name: 'start',
+                        x: 0,
+                        y: 0
+                    },
+                    {
+                        name: 'end',
+                        x: 0,
+                        y: 0
+                    }
                 ]
             },
             {
@@ -109,6 +121,23 @@ function useRequestElementList() {
                         value: '#000000'
                     }
                 ]
+            },
+            {
+                type: 'led',
+                text: 'LED',
+                pins: [
+                    {
+                        name: 'positive',
+                        x: 0,
+                        y: 0
+                    },
+                    {
+                        name: 'negative',
+                        x: 0,
+                        y: 0
+                    }
+                ],
+                defaultFeatures: []
             }
         ];
         dispatch(setElementTemplates(temps));

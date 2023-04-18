@@ -27,7 +27,8 @@ import useIndexedDB from '../../../../hooks/useIndexedDB';
 
 function ToolBar(props) {
     const dispatch = useDispatch();
-    const { circuit, modified, circuit: { elementSet } } = useSelector(state => state.editor);
+    const { circuit, modified } = useSelector(state => state.editor);
+    const { elementSet } = useSelector(state => state.editor.circuit);
     const [msg, contextHolder] = message.useMessage();
     const { filename, source, _id } = useLocation().state;
     const [handler, setHandler] = useState(null);

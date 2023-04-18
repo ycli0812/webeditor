@@ -13,6 +13,8 @@ import Resistor from './Resistor';
 import Breadboard from './Breadboard';
 import Wire from './Wire';
 import Switch from './Switch';
+import Capacitor from './Capacitor';
+import LED from './LED';
 
 function ElementContainer(props) {
     const {
@@ -67,6 +69,14 @@ function ElementContainer(props) {
             }
             case 'switch': {
                 elementList.push(<Switch key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
+                break;
+            }
+            case 'capacitor': {
+                elementList.push(<Capacitor key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
+                break;
+            }
+            case 'led': {
+                elementList.push(<LED key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
                 break;
             }
             default: break;           

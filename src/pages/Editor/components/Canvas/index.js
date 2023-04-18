@@ -48,7 +48,7 @@ function Canvas(props) {
     const { circuit, status, target: targetElement, anchorPoint } = useSelector(state => state.editor);
 
     // Elements adder
-    const addWire = useElementAdder('wire');
+    // const addWire = useElementAdder('wire');
     const adder = useElementAdder();
 
     const viewbox = useCanvasViewbox(canvasHeight, canvasWidth);

@@ -34,7 +34,16 @@ function ListFileItem(props) {
     };
 
     return (
-        <div className={listFileItemStyle.design} onClick={onClick} onMouseEnter={() => setOptionsOpacity(1)} onMouseLeave={() => setOptionsOpacity(0)}>
+        <div className={listFileItemStyle.design} onClick={onClick} onMouseEnter={() => setOptionsOpacity(1)} onMouseLeave={() => setOptionsOpacity(0)}
+            draggable 
+            // onDrag={(ev) => {console.log('drag')}}
+            onDragStart={(ev) => {
+                console.log('dragstart', ev);
+                ev.detail = {
+                    fileName
+                };
+            }}
+        >
             <Row align='middle' style={{ flex: 1 }}>
                 <Col flex={'auto'}>
                     <Space direction='vertical' size={0}>

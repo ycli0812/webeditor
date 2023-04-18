@@ -1,4 +1,4 @@
-# Web Breadboard Editor (SPA)
+# Web Breadboard Editor
 
 ## Introduction
 
@@ -64,4 +64,14 @@ There are three parts in the component: icon, value and unit. Icon is a slot whe
     onUnitChange={(value) => {editor.setElementFeatureUnit(id, 'resistance', value);}}>
 </InputCell>
 ```
+
+## Contribution
+
+### Add a element
+
+Make sure the element model has been added in back-end. Otherwise the algorithm will not be performing correctly on the element.
+
+Here is the steps to add a new element.
+
+#### Rules of SVG
 
