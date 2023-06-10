@@ -15,6 +15,7 @@ import breadboard_demo from '../../../../assets/elements/breadboard1.svg';
 import switch_demo from '../../../../assets/elements/switch.svg';
 import capacitor_demo from '../../../../assets/elements/capacitor.svg';
 import led_demo from '../../../../assets/elements/LED.svg'
+import voltage_source_demo from '../../../../assets/elements/voltage_source.svg';
 
 // Redux actions
 import { setEditorStatus, setTragetElement, setElementTemplates } from '../../slices/editorSlice';
@@ -83,7 +84,7 @@ function Panel(props) {
     // console.log(children);
 
     let panelHeight = 97;
-    if(children.props.children.length != undefined) {
+    if(children.props.children.length !== undefined) {
         panelHeight = Math.ceil(children.props.children.length / 2) * 97;
     }
 
@@ -117,6 +118,7 @@ function ElementMenu(props) {
                         <ElementItem type='capacitor' text='Capacitor' imgSrc={capacitor_demo} />
                         <ElementItem type='switch' text='Micro Switch' imgSrc={switch_demo} />
                         <ElementItem type='led' text='LED' imgSrc={led_demo} />
+                        <ElementItem type='source' text='Voltage Source' imgSrc={voltage_source_demo} />
                     </div>
                 </Panel>
             </Collapse>

@@ -15,6 +15,7 @@ import Wire from './Wire';
 import Switch from './Switch';
 import Capacitor from './Capacitor';
 import LED from './LED';
+import VoltageSource from './VoltageSource';
 
 function ElementContainer(props) {
     const {
@@ -77,6 +78,10 @@ function ElementContainer(props) {
             }
             case 'led': {
                 elementList.push(<LED key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
+                break;
+            }
+            case 'source': {
+                elementList.push(<VoltageSource key={id} {...{ id, pixelX, pixelY }} onMouseDown={onMouseDownOnElement} />);
                 break;
             }
             default: break;           

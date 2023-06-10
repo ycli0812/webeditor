@@ -138,7 +138,13 @@ function useRequestElementList() {
                     }
                 ],
                 defaultFeatures: []
-            }
+            },
+            {
+                type: 'source',
+                text: 'Voltage Source',
+                pins: [],
+                defaultFeatures: [],
+            },
         ];
         dispatch(setElementTemplates(temps));
     }, []);

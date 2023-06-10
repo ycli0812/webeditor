@@ -1,0 +1,11 @@
+<svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <rect width="500" height="300" style="fill: rgb(35, 112, 36);"/>
+        <rect x="375" y="75" width="50" height="50" style="stroke: rgb(0, 0, 0); paint-order: fill;"/>
+        <rect x="375" y="175" width="50" height="50" style="stroke: rgb(0, 0, 0); paint-order: fill;"/>
+        <ellipse style="stroke: rgb(255, 255, 255); stroke-width: 4px; fill: none;" cx="150" cy="150" rx="100" ry="100"/>
+        <path d="M 162.254 153.873 L 125.367 58.669 L 139.005 58.669 L 163.748 127.831 Q 166.735 136.144 168.748 143.417 Q 170.956 135.624 173.879 127.831 L 199.595 58.669 L 212.454 58.669 L 175.178 153.873 Z" transform="matrix(0.969952, 0, 0, 1, -14.186452, 51.825439)" style="fill: rgb(255, 253, 253); white-space: pre;"/>
+        <rect x="390" y="90" width="20" height="20" style="stroke: rgb(0, 0, 0); fill: rgb(205, 205, 205);"/>
+        <rect x="390" y="190" width="20" height="20" style="stroke: rgb(0, 0, 0); fill: rgb(205, 205, 205);"/>
+    </g>
+</svg>
