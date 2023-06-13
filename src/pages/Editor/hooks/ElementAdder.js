@@ -204,6 +204,18 @@ function useElementAdder() {
         return true;
     };
 
+    const sourceAdder = (x, y) => {
+        initDraft('source');
+        dispatch(setDraftInfo({
+            x,
+            y,
+            features: []
+        }));
+        dispatch(applyDraftElement());
+        clearCount();
+        return true;
+    };
+
     const generalAdder = (type, x, y) => {
         switch (type) {
             case 'resistor': return resistorAdder(x, y);
@@ -212,6 +224,7 @@ function useElementAdder() {
             case 'switch': return switchAdder(x, y);
             case 'capacitor': return capacitorAdder(x, y);
             case 'led': return ledAdder(x, y);
+            case 'source': return sourceAdder(x, y);
             default: return false;
         }
     };
